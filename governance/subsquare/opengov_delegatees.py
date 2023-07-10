@@ -1,4 +1,3 @@
-import pandas as pd
 from governance.sources.opensquare import Extractor, Transformer
 from governance.print_helpers import print_long_df
 

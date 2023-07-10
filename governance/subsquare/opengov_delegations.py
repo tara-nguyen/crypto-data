@@ -18,6 +18,10 @@ def get_data():
         df = pd.concat([df, df_chain], ignore_index=True)
     df = df.reindex(columns=["chain"] + fields)
 
+    new_cols = ["chain"] + fields[:2]
+    new_cols += ["delegatorCount", "delegateeCount", "capital", "votes"]
+    df = df.set_axis(new_cols, axis=1)
+
     return df
 
 
