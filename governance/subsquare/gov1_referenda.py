@@ -1,4 +1,4 @@
-import print_helpers as pr
+import governance.print_helpers as pr
 from governance import GovernanceReport
 from governance.sources.opensquare import Extractor, Transformer
 

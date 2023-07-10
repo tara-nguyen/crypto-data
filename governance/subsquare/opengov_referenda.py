@@ -1,4 +1,4 @@
-import print_helpers as pr
+import governance.print_helpers as pr
 from governance.sources.opensquare import Extractor, Transformer
 from string import Template
 from concurrent.futures import ThreadPoolExecutor
@@ -63,7 +63,7 @@ def get_referendum_votes(chain):
                    for route in routes]
     data = sum([future.result() for future in futures], [])
     df_votes = Transformer(data).transform(
-        fields, time_cols=time_cols,
+        fields, token_cols, chain, time_cols,
         sort_by=["indexer_blockTime", "referendumIndex"], ascending=False)
 
     new_cols = fields[:2] + ["voteTime"] + fields[3:6]
@@ -91,8 +91,3 @@ if __name__ == "__main__":
     print()
     df = pr.trim_account_id_strings(ref["votes"], ["voter"])
     pr.print_long_df(df)
-
-    # df = ref["referenda"].reindex(
-    #     columns=["fellowshipRefs", "treasuryProposals",
-    #              "treasuryBounties"]).astype(str)
-    # print(df.to_string())

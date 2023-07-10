@@ -1,4 +1,4 @@
-import print_helpers as pr
+import governance.print_helpers as pr
 from governance import get_token_amount
 from governance.sources.opensquare import Extractor, Transformer
 

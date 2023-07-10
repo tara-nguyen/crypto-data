@@ -1,4 +1,4 @@
-import print_helpers as pr
+import governance.print_helpers as pr
 from governance.sources.opensquare import Extractor, Transformer
 from string import Template
 from concurrent.futures import ThreadPoolExecutor
@@ -23,6 +23,16 @@ def get_referenda(chain):
     data = Extractor("subsquare", chain, "/fellowship/referenda").extract()
     df = Transformer(data).transform(fields, chain=chain, time_cols=time_cols)
 
+    new_cols = ["id", "track", "state"] + fields[3:6]
+    new_cols += ["submissionTime", "decisionStartBlock",
+                 "confirmationStartBlock", "confirmationStartTime",
+                 "confirmedAtBlock", "bareAye", "aye", "nay", "electorate",
+                 "enactmentDelayProposed", "enactedAtBlockProposed",
+                 "enactedAtBlockActual", "executionResult", "lastUpdateTime",
+                 "subsquareCommentCount", "polkassemblyCommentCount",
+                 "opengovRefs"]
+    df = df.set_axis(new_cols, axis=1)
+
     return df
 
 
@@ -45,6 +55,12 @@ def get_referendum_votes(chain):
     df_votes = Transformer(data).transform(
         fields, time_cols=time_cols,
         sort_by=["indexer_blockTime", "referendumIndex"], ascending=False)
+
+    new_cols = fields[:2] + ["voteTime"] + fields[3:5]
+    new_cols += ["updatedBareAye", "updatedAye", "updatedNay", "blockId",
+                 "extrinsicId", "eventId"]
+    df_votes = df_votes.set_axis(new_cols, axis=1)
+
     df = {"referenda": df_referenda, "votes": df_votes}
 
     return df
