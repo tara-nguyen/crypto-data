@@ -1,4 +1,4 @@
-from staking import extract
+from reports.staking_etl import extract
 from time import sleep
 
 
