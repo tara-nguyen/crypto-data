@@ -1,5 +1,5 @@
 import governance.print_helpers as pr
-from governance import GovernanceReport
+from reports.governance_etl import GovernanceReport
 from governance.sources.opensquare import Extractor, Transformer
 
 

@@ -1,5 +1,6 @@
 import pandas as pd
-from governance import GovernanceReport, get_token_amount, convert_timestamp
+from reports.governance_etl import (GovernanceReport, get_token_amount,
+                                    convert_timestamp)
 from requests import Session
 
 

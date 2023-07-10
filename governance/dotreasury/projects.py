@@ -1,5 +1,5 @@
 import pandas as pd
-from governance import GovernanceReport
+from reports.governance_etl import GovernanceReport
 from governance.sources.opensquare import Extractor, Transformer
 from governance.print_helpers import trim_long_strings
 
