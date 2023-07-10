@@ -1,6 +1,6 @@
 import onchain.opengov_track_ids as ogt
 import pandas as pd
-from governance import GovernanceReport
+from reports.governance_etl import GovernanceReport
 from governance.sources.opensquare import Extractor, Transformer
 from string import Template
 from concurrent.futures import ThreadPoolExecutor
