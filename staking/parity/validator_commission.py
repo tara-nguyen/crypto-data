@@ -1,5 +1,5 @@
 import pandas as pd
-from staking import StakingReport, get_time, get_era
+from reports.staking_etl import StakingReport, get_time, get_era
 from staking.sources.polkadotjs import (PolkadotjsExtractor,
                                         PolkadotjsTransformer)
 

@@ -1,7 +1,7 @@
 import pandas as pd
 from google.cloud import bigquery
 from google.oauth2 import service_account
-from staking import StakingReport
+from reports.staking_etl import StakingReport
 
 
 class PolkaholicExtractor:

@@ -2,8 +2,8 @@ import json
 import re
 import pandas as pd
 import matplotlib.pyplot as plt
-from staking import (StakingReport, extract, get_time, transform_numeric,
-                     get_daily_data)
+from reports.staking_etl import (StakingReport, extract, get_time,
+                                 transform_numeric, get_daily_data)
 from itertools import product
 
 
