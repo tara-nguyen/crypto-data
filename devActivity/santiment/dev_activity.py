@@ -1,5 +1,5 @@
-from finStatusAndDevActivity.sources.santiment import (SantimentExtractor,
-                                                       SantimentTransformer)
+from devActivity.sources.santiment import (SantimentExtractor,
+                                           SantimentTransformer)
 
 
 def get_data():
