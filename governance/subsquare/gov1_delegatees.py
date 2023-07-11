@@ -1,5 +1,5 @@
-import pandas as pd
 from governance.sources.opensquare import Extractor, Transformer
+from governance.print_helpers import print_long_df
 
 
 def get_data(chain):
@@ -15,4 +15,4 @@ def get_data(chain):
 
 if __name__ == "__main__":
     delegatees = get_data("kusama")
-    print(pd.concat([delegatees.head(10), delegatees.tail(10)]).to_string())
+    print_long_df(delegatees)
