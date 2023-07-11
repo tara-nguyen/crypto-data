@@ -50,7 +50,10 @@ class Transformer:
 
         if sort:
             if sort_by is None:
-                df = df.sort_values(fields[0], ascending=False)
+                if fields[0] == "account":
+                    df = df.sort_values(fields[0], key=lambda s: s.str.lower())
+                else:
+                    df = df.sort_values(fields[0], ascending=False)
             else:
                 df = df.sort_values(sort_by, **kwargs)
 

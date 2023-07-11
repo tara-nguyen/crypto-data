@@ -7,8 +7,7 @@ def get_data(chain):
     token_cols = ["capital", "votes"]
 
     data = Extractor("subsquare", chain, "/referenda/delegatee").extract()
-    df = Transformer(data).transform(fields, token_cols, chain,
-                                     sort_by=fields[0])
+    df = Transformer(data).transform(fields, token_cols, chain)
 
     return df
 
