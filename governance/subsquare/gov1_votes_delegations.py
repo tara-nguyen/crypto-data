@@ -1,5 +1,5 @@
-import pandas as pd
 from governance.sources.opensquare import Extractor, Transformer
+from governance.print_helpers import print_long_df
 
 
 def get_data(chain):
@@ -17,5 +17,5 @@ def get_data(chain):
 
 
 if __name__ == "__main__":
-    df = get_data("kusama")
-    print(pd.concat([df.head(10), df.tail(10)]).to_string())
+    votes = get_data("kusama")
+    print_long_df(votes)
