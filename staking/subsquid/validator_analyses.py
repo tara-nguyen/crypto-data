@@ -141,7 +141,7 @@ def get_data(start=StakingReport().start_era, end=StakingReport().end_era):
     df_validator_prefs = df_validator_prefs.groupby(["date", "validator"])
     df_validator_prefs = df_validator_prefs.head(1)
 
-    # Nominator stake and nominator counut
+    # Nominator stake and nominator count
     df_nominator_prefs = df_nominators.query("date in @dates")
     df_nominator_prefs = reduce(
         lambda left, right: left.join(right),

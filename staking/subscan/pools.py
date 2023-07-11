@@ -14,7 +14,6 @@ def get_data():
         "nominator_account.parent.sub_symbol", "nominator_account.display"])
     df = df.set_axis(["id", "account", "nominator_acc", "pool", "subtitle",
                       "nominator_acc_title"], axis=1)
-    df["total_bonded"] = df["total_bonded"].astype(int) / 1e10
     df["pool"] = df["pool"].str.cat(df["subtitle"], sep=" / ")
     df = df.fillna({"pool": df["nominator_acc_title"].mask(
         lambda x: x.isna(), df["nominator_acc"])})

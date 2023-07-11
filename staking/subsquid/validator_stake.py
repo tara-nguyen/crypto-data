@@ -10,9 +10,10 @@ def get_data(start=StakingReport().start_era, end=StakingReport().end_era):
     """Retrieve from Subsquid data on validator stake and return a dataframe."""
     metric = "eraStakers"
     template = Template(
-        '{"query": "query MyQuery {$metric(where: {role_eq: Validator, '
-        'era: {timestamp_gt: \\"$start\\", timestamp_lte: \\"$end\\"}}) '
-        '{id totalBonded selfBonded}}", "operationName": "MyQuery"}')
+        '{"query": "query MyQuery {$metric(limit: $limit, offset: $offset, '
+        'where: {role_eq: Validator, era: {timestamp_gt: \\"$start\\", '
+        'timestamp_lte: \\"$end\\"}}) {id totalBonded selfBonded}}", '
+        '"operationName": "MyQuery"}')
 
     extractor = SubsquidExtractor("explorer")
     with ThreadPoolExecutor() as exe:
@@ -35,11 +36,11 @@ def get_data(start=StakingReport().start_era, end=StakingReport().end_era):
 if __name__ == "__main__":
     print(pd.Timestamp.now())
     t0 = perf_counter_ns()
-    history = get_data(StakingReport().end_era-2)
+    stake = get_data(StakingReport().end_era-2)
     t1 = perf_counter_ns()
     print(f"Run time: {(t1 - t0) / 1e9 / 60:.2f} minutes")
-    # history = StakeChangesByDate(history, ["totalStake", "selfStake"]).get_data(
+    # stake = StakeChangesByDate(stake, ["totalStake", "selfStake"]).get_data(
     #     ["2023-02-28", "2023-03-01"])
-    # history = history.sort_values("selfStake_2023-02-28")
+    # stake = stake.sort_values("selfStake_2023-02-28")
     with pd.option_context("display.max_columns", None):
-        print(history)
+        print(stake)
