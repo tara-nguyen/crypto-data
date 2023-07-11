@@ -2,12 +2,12 @@ from governance.sources.opensquare import Extractor, Transformer
 from governance.print_helpers import print_long_df
 
 
-def get_data(chain):
+def get_data(network):
     fields = ["bountyIndex", "state_state", "value", "fiatValue", "symbolPrice"]
     token_cols = ["value"]
 
-    data = Extractor("dotreasury", chain, "/bounties").extract()
-    df = Transformer(data).transform(fields, token_cols, chain)
+    data = Extractor("dotreasury", network, "/bounties").extract()
+    df = Transformer(data).transform(fields, token_cols, network)
 
     return df
 

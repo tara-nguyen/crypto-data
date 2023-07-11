@@ -3,7 +3,7 @@ from reports.governance_etl import get_token_amount
 from governance.sources.opensquare import Extractor, Transformer
 
 
-def get_data(chain):
+def get_data(network):
     fields = ["hash", "state_state", "onchainData_timeline", "finder",
               "onchainData_meta_who", "title", "content", "onchainData_reason",
               "onchainData_meta_deposit", "createdAt", "height",
@@ -13,8 +13,8 @@ def get_data(chain):
     token_cols = ["onchainData_meta_deposit", "onchainData_medianValue"]
     time_cols = ["onchainData_state_indexer_blockTime", "createdAt"]
 
-    data = Extractor("subsquare", chain, "/treasury/tips").extract()
-    df = Transformer(data).transform(fields, token_cols, chain, time_cols,
+    data = Extractor("subsquare", network, "/treasury/tips").extract()
+    df = Transformer(data).transform(fields, token_cols, network, time_cols,
                                      sort_by="createdAt", ascending=False)
 
     df["onchainData_timeline"] = df["onchainData_timeline"].map(
@@ -24,7 +24,7 @@ def get_data(chain):
     target_col = "onchainData_meta_tips"
     df[new_col] = df[target_col].map(lambda ls: [l[0] for l in ls])
     df[target_col] = df[target_col].map(
-        lambda ls: [get_token_amount(l[1], chain) for l in ls])
+        lambda ls: [get_token_amount(l[1], network) for l in ls])
 
     cols = fields.copy()
     cols.insert(fields.index(target_col), new_col)

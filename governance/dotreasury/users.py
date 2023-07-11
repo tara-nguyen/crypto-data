@@ -2,11 +2,11 @@ from governance.sources.opensquare import Extractor, Transformer
 from governance.print_helpers import print_long_df
 
 
-def get_data(chain):
+def get_data(network):
     fields = ["address", "isProposer", "isBeneficiary", "isCouncilor",
               "proposals", "tips", "bounties", "childBounties"]
 
-    data = Extractor("dotreasury", chain, "/participants").extract()
+    data = Extractor("dotreasury", network, "/participants").extract()
     df = Transformer(data).transform(fields, sort_by=fields[4:],
                                      ascending=False)
 

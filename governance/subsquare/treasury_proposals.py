@@ -3,7 +3,7 @@ import pandas as pd
 from governance.sources.opensquare import Extractor, Transformer
 
 
-def get_data(chain):
+def get_data(network):
     fields = ["proposalIndex", "referendumIndex", "track", "state", "proposer",
               "onchainData_beneficiary", "title", "content",
               "onchainData_value", "onchainData_meta_bond", "createdAt",
@@ -13,8 +13,8 @@ def get_data(chain):
     token_cols = ["onchainData_value", "onchainData_meta_bond"]
     time_cols = ["onchainData_state_indexer_blockTime", "createdAt"]
 
-    data = Extractor("subsquare", chain, "/treasury/proposals").extract()
-    df = Transformer(data).transform(fields, token_cols, chain, time_cols)
+    data = Extractor("subsquare", network, "/treasury/proposals").extract()
+    df = Transformer(data).transform(fields, token_cols, network, time_cols)
 
     return df
 

@@ -4,7 +4,7 @@ from string import Template
 from concurrent.futures import ThreadPoolExecutor
 
 
-def get_referenda(chain):
+def get_referenda(network):
     fields = ["referendumIndex", "track", "state_name", "proposer", "title",
               "content", "createdAt", "onchainData_info_deciding_since",
               "onchainData_lastConfirmStartedAt_blockHeight",
@@ -24,8 +24,8 @@ def get_referenda(chain):
     time_cols = ["onchainData_lastConfirmStartedAt_blockTime",
                   "state_indexer_blockTime", "createdAt"]
 
-    data = Extractor("subsquare", chain, "/gov2/referendums").extract()
-    df = Transformer(data).transform(fields, token_cols, chain, time_cols)
+    data = Extractor("subsquare", network, "/gov2/referendums").extract()
+    df = Transformer(data).transform(fields, token_cols, network, time_cols)
 
     df["onchainData_approved"] = df["onchainData_approved"].map(
         lambda x: x[0], na_action="ignore")
@@ -44,8 +44,8 @@ def get_referenda(chain):
     return df
 
 
-def get_referendum_votes(chain):
-    df_referenda = get_referenda(chain)
+def get_referendum_votes(network):
+    df_referenda = get_referenda(network)
     ref_ids = df_referenda["id"]
 
     fields = ["referendumIndex", "voter", "indexer_blockTime", "isStandard",
@@ -59,11 +59,11 @@ def get_referendum_votes(chain):
     routes = [route_template.substitute(ref_id=rid) for rid in ref_ids]
 
     with ThreadPoolExecutor() as exe:
-        futures = [exe.submit(Extractor("subsquare", chain, route).extract)
+        futures = [exe.submit(Extractor("subsquare", network, route).extract)
                    for route in routes]
     data = sum([future.result() for future in futures], [])
     df_votes = Transformer(data).transform(
-        fields, token_cols, chain, time_cols,
+        fields, token_cols, network, time_cols,
         sort_by=["indexer_blockTime", "referendumIndex"], ascending=False)
 
     new_cols = fields[:2] + ["voteTime"] + fields[3:6]
@@ -77,8 +77,8 @@ def get_referendum_votes(chain):
     return df
 
 
-def get_data(chain):
-    df = get_referendum_votes(chain)
+def get_data(network):
+    df = get_referendum_votes(network)
 
     return df
 

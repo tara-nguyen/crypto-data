@@ -24,19 +24,20 @@ def get_data():
     route_template = Template("/gov2/tracks/$track_id")
 
     df = pd.DataFrame([])
-    for chain in GovernanceReport().chains:
-        track_ids = ogt.get_data(chain)
+    for network in GovernanceReport().networks:
+        track_ids = ogt.get_data(network)
         routes = [route_template.substitute(track_id=tid) for tid in track_ids]
         with ThreadPoolExecutor() as exe:
-            futures = [exe.submit(Extractor("subsquare", chain, route).extract)
-                       for route in routes]
+            futures = [
+                exe.submit(Extractor("subsquare", network, route).extract)
+                for route in routes]
         data = [future.result() for future in futures]
 
-        df_chain = Transformer(data).transform(fields, token_cols, chain,
+        df_chain = Transformer(data).transform(fields, token_cols, network,
                                                sort_by=fields[0])
-        df_chain["chain"] = chain
+        df_chain["network"] = network
         df = pd.concat([df, df_chain], ignore_index=True)
-    df = df.reindex(columns=["chain"] + fields)
+    df = df.reindex(columns=["network"] + fields)
 
     return df
 

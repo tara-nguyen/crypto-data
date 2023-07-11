@@ -2,7 +2,7 @@ import governance.print_helpers as pr
 from governance.sources.opensquare import Extractor, Transformer
 
 
-def get_data(chain):
+def get_data(network):
     fields = ["motionIndex", "state", "proposer", "title", "content",
               "createdAt", "onchainData_threshold", "onchainData_voting_ayes",
               "onchainData_voting_nays", "onchainData_state_indexer_blockTime",
@@ -11,7 +11,7 @@ def get_data(chain):
               "onchainData_externalProposals"]
     time_cols = ["onchainData_state_indexer_blockTime", "createdAt"]
 
-    data = Extractor("subsquare", chain, "/motions").extract()
+    data = Extractor("subsquare", network, "/motions").extract()
     df = Transformer(data).transform(fields, time_cols=time_cols)
     df = df.dropna(subset="motionIndex")
 

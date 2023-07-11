@@ -52,12 +52,12 @@ def get_data():
                   "output_transfer_value", "toBeAwarded_total"]
 
     df = pd.DataFrame([])
-    for chain in GovernanceReport().chains:
-        data = Extractor("dotreasury", chain, "/overview").extract()
-        df_chain = Transformer(data).transform(fields, token_cols, chain)
-        df_chain["chain"] = chain
+    for network in GovernanceReport().networks:
+        data = Extractor("dotreasury", network, "/overview").extract()
+        df_chain = Transformer(data).transform(fields, token_cols, network)
+        df_chain["network"] = network
         df = pd.concat([df, df_chain], ignore_index=True)
-    df = df.reindex(columns=["chain"] + fields)
+    df = df.reindex(columns=["network"] + fields)
 
     return df
 

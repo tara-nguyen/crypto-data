@@ -3,14 +3,14 @@ from reports.governance_etl import GovernanceReport
 from governance.sources.opensquare import Extractor, Transformer
 
 
-def get_data(chain):
+def get_data(network):
     fields = ["proposalIndex", "state", "proposer", "title", "content",
               "createdAt", "onchainData_deposit",
               "proposalState_indexer_blockTime", "commentsCount",
               "polkassemblyCommentsCount", "referendumIndex"]
     time_cols = ["proposalState_indexer_blockTime", "createdAt"]
 
-    data = Extractor("subsquare", chain, "/democracy/proposals").extract()
+    data = Extractor("subsquare", network, "/democracy/proposals").extract()
     df = Transformer(data).transform(fields, time_cols=time_cols)
 
     new_col = "depositor"
@@ -19,7 +19,7 @@ def get_data(chain):
         lambda x: x[::-1] if isinstance(x[0], int) else x)
     df[new_col] = df[target_col].map(lambda x: x[0][0])
     df[target_col] = df[target_col].map(
-        lambda x: x[1] / GovernanceReport().chains[chain])
+        lambda x: x[1] / GovernanceReport().networks[network])
 
     cols = fields.copy()
     cols.insert(fields.index(target_col), new_col)

@@ -10,15 +10,15 @@ def get_data():
     token_cols = ["statistics_votes_capital", "statistics_votes_votes"]
 
     df = pd.DataFrame([])
-    for chain in GovernanceReport().chains:
-        data = Extractor("subsquare", chain, "/referenda/tracks").extract()
-        df_chain = Transformer(data).transform(fields, token_cols, chain,
+    for network in GovernanceReport().networks:
+        data = Extractor("subsquare", network, "/referenda/tracks").extract()
+        df_chain = Transformer(data).transform(fields, token_cols, network,
                                                sort=False)
-        df_chain["chain"] = chain
+        df_chain["network"] = network
         df = pd.concat([df, df_chain], ignore_index=True)
-    df = df.reindex(columns=["chain"] + fields)
+    df = df.reindex(columns=["network"] + fields)
 
-    new_cols = ["chain"] + fields[:2]
+    new_cols = ["network"] + fields[:2]
     new_cols += ["delegatorCount", "delegateeCount", "capital", "votes"]
     df = df.set_axis(new_cols, axis=1)
 
