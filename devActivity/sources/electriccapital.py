@@ -1,5 +1,5 @@
 import pandas as pd
-from reports.quarterly_etl import QuarterlyReport, extract
+from reports.quarterly_etl import QuarterlyReport, extract, format_timestamps
 from functools import reduce
 
 
@@ -23,8 +23,7 @@ class ElectricCapitalTransformer:
     def to_frame(self, start=QuarterlyReport().start_time,
                  end=QuarterlyReport().end_time, new_cols=None):
         """Convert json-encoded content to a dataframe."""
-        start = start.strftime(self.timestamp_format)
-        end = end.strftime(self.timestamp_format)
+        start, end = format_timestamps([start, end], self.timestamp_format)
 
         dfs = []
         for d in self.data:
@@ -41,4 +40,3 @@ class ElectricCapitalTransformer:
         df = df.sort_values("date", ascending=False)
 
         return df
-
