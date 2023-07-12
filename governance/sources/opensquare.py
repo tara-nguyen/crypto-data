@@ -7,7 +7,7 @@ from requests import Session
 class Extractor:
     def __init__(self, source, network, route):
         self.network = network.lower()
-        networks = GovernanceReport().networks
+        networks = list(GovernanceReport().networks.keys())
         if self.network not in networks:
             raise Exception(
                 f'network must be either "{networks[0]}" or "{networks[1]}"')
