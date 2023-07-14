@@ -5,6 +5,7 @@ from devActivity.sources.santiment import (SantimentExtractor,
 def get_data(slug):
     data = SantimentExtractor().extract("price_usd", slug=slug)
     df = SantimentTransformer(data).to_frame()
+    df = df.set_axis(["date", "priceUSD"], axis=1)
 
     return df
 
