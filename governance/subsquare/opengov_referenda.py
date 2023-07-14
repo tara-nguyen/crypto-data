@@ -55,7 +55,7 @@ def get_referendum_votes(network):
               "indexer_extrinsicIndex"]
     token_cols = ["vote_balance", "vote_aye", "vote_nay", "vote_abstain"]
     time_cols = ["indexer_blockTime"]
-    route_template = Template("/gov2/referendums/$ref_id/vote-extrinsics")
+    route_template = Template("/gov2/referendums/$ref_id/vote-calls")
     routes = [route_template.substitute(ref_id=rid) for rid in ref_ids]
 
     with ThreadPoolExecutor() as exe:
