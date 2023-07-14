@@ -1,13 +1,13 @@
 import pandas as pd
-from reports.quarterly_etl import QuarterlyReport, extract, format_timestamps
+from reports.quarterly_etl import QuarterlyReport, extract, convert_timestamp
 from functools import reduce
 
 
 class ElectricCapitalExtractor:
     def __init__(self, metric="dev_mau_by_dev_type", ecosystem="polkadot"):
         self.method = "GET"
-        self.url = f"https://www.developerreport.com/api/charts/" \
-                   f"{metric}/{ecosystem}"
+        self.url = "https://www.developerreport.com/api/charts/"
+        self.url += f"{metric}/{ecosystem}"
 
     def extract(self):
         data = extract(self.method, self.url, data="")["series"]
@@ -23,7 +23,8 @@ class ElectricCapitalTransformer:
     def to_frame(self, start=QuarterlyReport().start_time,
                  end=QuarterlyReport().end_time, new_cols=None):
         """Convert json-encoded content to a dataframe."""
-        start, end = format_timestamps([start, end], self.timestamp_format)
+        start, end = [convert_timestamp(t, self.timestamp_format)
+                      for t in [start, end]]
 
         dfs = []
         for d in self.data:

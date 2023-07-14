@@ -22,16 +22,15 @@ def extract(method, url, **kwargs):
     return data
 
 
-def format_timestamps(ts, timestamp_format):
-    ts = [t.strftime(timestamp_format) for t in ts]
+def convert_timestamp(t, timestamp_format=None, stop=10):
+    if isinstance(t, str):
+        new_t = t[:stop]
+    else:
+        new_t = pd.to_datetime(
+            t, unit="ms" if isinstance(t, (int, float)) else None)
+        new_t = new_t.strftime(timestamp_format)
 
-    return ts
-
-
-def trim_timestamp(ts):
-    ts = ts.str.slice(stop=10)
-
-    return ts
+    return new_t
 
 
 def get_token_amount(x, network):
