@@ -1,5 +1,6 @@
 import pandas as pd
-from reports.quarterly_etl import QuarterlyReport, extract
+from reports.quarterly_etl import (QuarterlyReport, extract, format_timestamps,
+                                   trim_timestamp)
 from .authorization import token_terminal_bearer
 
 
@@ -26,11 +27,9 @@ class TokenTerminalTransformer:
     def to_frame(self, start=QuarterlyReport().start_time,
                  end=QuarterlyReport().end_time):
         """Convert json-encoded content to a dataframe."""
-        start = start.strftime(self.timestamp_format)
-        end = end.strftime(self.timestamp_format)
-
+        start, end = format_timestamps([start, end], self.timestamp_format)
         df = pd.DataFrame(self.data).query("@start <= timestamp <= @end")
-        df["date"] = df["timestamp"].str.removesuffix("T00:00:00.000Z")
+        df["date"] = trim_timestamp(df["timestamp"])
         df = df.reindex(columns=["date", "value"])
 
         return df

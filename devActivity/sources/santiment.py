@@ -1,5 +1,6 @@
 import pandas as pd
-from reports.quarterly_etl import QuarterlyReport, extract
+from reports.quarterly_etl import (QuarterlyReport, extract, format_timestamps,
+                                   trim_timestamp)
 from string import Template
 
 
@@ -18,8 +19,7 @@ class SantimentExtractor:
     def extract(self, metric, slug="polkadot-new",
                 start=QuarterlyReport().start_time,
                 end=QuarterlyReport().end_time, moving_ave_base=1):
-        start = start.strftime(self.timestamp_format)
-        end = end.strftime(self.timestamp_format)
+        start, end = format_timestamps([start, end], self.timestamp_format)
         payload = self.template.substitute(
             metric=metric, slug=slug, start=start, end=end,
             moving_ave_base=moving_ave_base)
@@ -28,7 +28,6 @@ class SantimentExtractor:
 
         return data
 
-
 class SantimentTransformer:
     def __init__(self, data):
         self.data = data
@@ -36,7 +35,7 @@ class SantimentTransformer:
     def to_frame(self):
         """Convert json-encoded content to a dataframe."""
         df = pd.DataFrame(self.data)
-        df["date"] = df["datetime"].str.removesuffix("T00:00:00Z")
+        df["date"] = trim_timestamp(df["datetime"])
         df = df.reindex(columns=["date", "value"])
         df = df.sort_values("date", ascending=False)
 
