@@ -2,7 +2,7 @@ from governance.sources.opensquare import Extractor, Transformer
 from governance.print_helpers import print_long_df
 
 
-def get_data(chain):
+def get_data(network):
     fields = ["indexer_blockHeight", "indexer_blockTime", "treasuryBalance",
               "income_transfer", "income_slash", "income_slashSeats_treasury",
               "income_slashSeats_staking", "income_slashSeats_democracy",
@@ -19,8 +19,8 @@ def get_data(chain):
                   "output_burnt"]
     time_cols = ["indexer_blockTime"]
 
-    data = Extractor("dotreasury", chain, "/stats/weekly").extract()
-    df = Transformer(data).transform(fields, token_cols, chain, time_cols)
+    data = Extractor("dotreasury", network, "/stats/weekly").extract()
+    df = Transformer(data).transform(fields, token_cols, network, time_cols)
 
     return df
 

@@ -1,14 +1,13 @@
 import governance.print_helpers as pr
-from reports.governance_etl import GovernanceReport
 from governance.sources.opensquare import Extractor, Transformer
 
 
-def get_data(chain):
+def get_data(network):
     fields = ["referendumIndex", "state", "proposer", "title", "createdAt",
               "onchainData_meta_delay", "onchainData_state_indexer_blockTime"]
     time_cols = ["onchainData_state_indexer_blockTime", "createdAt"]
 
-    data = Extractor("subsquare", chain, "/democracy/referendums").extract()
+    data = Extractor("subsquare", network, "/democracy/referendums").extract()
     df = Transformer(data).transform(fields, time_cols=time_cols)
 
     return df

@@ -5,17 +5,17 @@ from requests import Session
 
 
 class Extractor:
-    def __init__(self, source, chain, route):
-        self.chain = chain.lower()
-        chains = GovernanceReport().chains
-        if self.chain not in chains:
+    def __init__(self, source, network, route):
+        self.network = network.lower()
+        networks = list(GovernanceReport().networks.keys())
+        if self.network not in networks:
             raise Exception(
-                f'chain must be either "{chains[0]}" or "{chains[1]}"')
+                f'network must be either "{networks[0]}" or "{networks[1]}"')
 
         if source.lower() == "subsquare":
-            self.url = f"https://{self.chain}.subsquare.io/api{route}"
+            self.url = f"https://{self.network}.subsquare.io/api{route}"
         elif source.lower() == "dotreasury":
-            self.url = f"https://api.dotreasury.com/{self.chain}{route}"
+            self.url = f"https://api.dotreasury.com/{self.network}{route}"
         else:
             raise Exception('source must be either "subsquare" or "dotreasury"')
 
@@ -35,7 +35,7 @@ class Transformer:
     def __init__(self, data):
         self.data = data
 
-    def transform(self, fields=None, token_cols=None, chain=None,
+    def transform(self, fields=None, token_cols=None, network=None,
                   time_cols=None, sort=True, sort_by=None, **kwargs):
         df = pd.json_normalize(self.data, sep="_")
         if fields is not None:
@@ -43,7 +43,7 @@ class Transformer:
 
         if token_cols is not None:
             df[token_cols] = df[token_cols].applymap(
-                lambda x: get_token_amount(x, chain), na_action="ignore")
+                lambda x: get_token_amount(x, network), na_action="ignore")
         if time_cols is not None:
             df[time_cols] = df[time_cols].applymap(
                 lambda t: convert_timestamp(t), na_action="ignore")

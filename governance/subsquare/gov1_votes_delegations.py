@@ -2,16 +2,16 @@ from governance.sources.opensquare import Extractor, Transformer
 from governance.print_helpers import print_long_df
 
 
-def get_data(chain):
+def get_data(network):
     fields = ["referendumIndex", "turnout", "electorate", "percentage", "votes",
               "ayes", "nays", "delegationAddresses", "directAddresses",
               "delegationCapital", "delegationVotes"]
     token_cols = ["turnout", "electorate", "votes", "ayes", "nays",
                   "delegationCapital", "delegationVotes"]
 
-    data = Extractor("subsquare", chain,
+    data = Extractor("subsquare", network,
                      "/democracy/referenda/turnout").extract()
-    df = Transformer(data).transform(fields, token_cols, chain)
+    df = Transformer(data).transform(fields, token_cols, network)
 
     return df
 

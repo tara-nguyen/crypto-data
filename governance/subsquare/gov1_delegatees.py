@@ -2,13 +2,13 @@ from governance.sources.opensquare import Extractor, Transformer
 from governance.print_helpers import print_long_df
 
 
-def get_data(chain):
+def get_data(network):
     fields = ["account", "delegatorsCount", "delegatedCapital",
               "delegatedVotes"]
     token_cols = ["delegatedCapital", "delegatedVotes"]
 
-    data = Extractor("subsquare", chain, "/democracy/delegatee").extract()
-    df = Transformer(data).transform(fields, token_cols, chain)
+    data = Extractor("subsquare", network, "/democracy/delegatee").extract()
+    df = Transformer(data).transform(fields, token_cols, network)
 
     return df
 

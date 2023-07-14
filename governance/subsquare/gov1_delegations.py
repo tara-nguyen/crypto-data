@@ -9,12 +9,12 @@ def get_data():
     token_cols = ["votes_capital", "votes_votes"]
 
     df = pd.DataFrame([])
-    for chain in GovernanceReport().chains:
-        data = Extractor("subsquare", chain, "/democracy/summary").extract()
-        df_chain = Transformer(data).transform(fields, token_cols, chain)
-        df_chain["chain"] = chain
+    for network in GovernanceReport().networks:
+        data = Extractor("subsquare", network, "/democracy/summary").extract()
+        df_chain = Transformer(data).transform(fields, token_cols, network)
+        df_chain["network"] = network
         df = pd.concat([df, df_chain], ignore_index=True)
-    df = df.reindex(columns=["chain"] + fields)
+    df = df.reindex(columns=["network"] + fields)
 
     return df
 

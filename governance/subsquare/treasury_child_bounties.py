@@ -2,7 +2,7 @@ import governance.print_helpers as pr
 from governance.sources.opensquare import Extractor, Transformer
 
 
-def get_data(chain):
+def get_data(network):
     fields = ["index", "parentBountyId", "state", "proposer",
               "onchainData_beneficiary", "title", "content",
               "onchainData_description", "onchainData_value", "createdAt",
@@ -12,8 +12,8 @@ def get_data(chain):
     token_cols = ["onchainData_value", "onchainData_meta_curatorDeposit"]
     time_cols = ["onchainData_state_indexer_blockTime", "createdAt"]
 
-    data = Extractor("subsquare", chain, "/treasury/child-bounties").extract()
-    df = Transformer(data).transform(fields, token_cols, chain, time_cols)
+    data = Extractor("subsquare", network, "/treasury/child-bounties").extract()
+    df = Transformer(data).transform(fields, token_cols, network, time_cols)
 
     return df
 
