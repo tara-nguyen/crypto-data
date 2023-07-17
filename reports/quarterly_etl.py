@@ -23,13 +23,13 @@ def extract(method, url, **kwargs):
     return data
 
 
-def convert_timestamp(t, timestamp_format=None, stop=10):
+def convert_timestamp(t, timestamp_format=None, unit=None, stop=10):
     if isinstance(t, str):
         new_t = t[:stop]
     else:
-        new_t = pd.to_datetime(
-            t, unit="ms" if isinstance(t, (int, float)) else None)
-        new_t = new_t.strftime(timestamp_format)
+        new_t = pd.to_datetime(t, unit=unit)
+        if timestamp_format is not None:
+            new_t = new_t.strftime(timestamp_format)
 
     return new_t
 

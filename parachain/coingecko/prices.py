@@ -21,7 +21,8 @@ def get_data(start=QuarterlyReport().start_time,
         df_coin["id"] = coin_id
         df = pd.concat([df, df_coin])
 
-    df["date"] = df["timestamp"].map(lambda t: convert_timestamp(t, "%Y-%m-%d"))
+    df["date"] = df["timestamp"].map(lambda t: convert_timestamp(t, "%Y-%m-%d",
+                                                                 unit="ms"))
     df = df.merge(CoingeckoCoins().coins)
     df = df.reindex(columns=["chain", "date", "prices"])
 
