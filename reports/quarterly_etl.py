@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from requests import Session
 
@@ -22,34 +23,22 @@ def extract(method, url, **kwargs):
     return data
 
 
-def format_timestamps(ts, timestamp_format):
-    ts = [t.strftime(timestamp_format) for t in ts]
-
-    return ts
-
-
-def trim_timestamp(ts):
-    ts = ts.str.slice(stop=10)
-
-    return ts
-
-
-def get_token_amount(x, network):
-    """Convert a hex string or a character string containing only digits to an
-    integer. Then, divide the integer by the denomination of the given network's
-    token.
-    """
-    if isinstance(x, str):
-        if x.isdigit() or "." in x:
-            x = float(x)
-        else:
-            x = int(x, 16)
-
-    networks = QuarterlyReport().networks
-    if network in networks:
-        x /= networks[network]
+def convert_timestamp(t, timestamp_format=None, unit=None, stop=10):
+    if isinstance(t, str):
+        new_t = t[:stop]
     else:
-        raise Exception(
-            f'network must be either "{networks[0]}" or "{networks[1]}"')
+        new_t = pd.to_datetime(t, unit=unit)
+        if timestamp_format is not None:
+            new_t = new_t.strftime(timestamp_format)
 
-    return x
+    return new_t
+
+
+def to_epoch(time):
+    """Convert a time string to epoch time (i.e. the number of seconds from
+    1970-01-01 00:00:00.
+    """
+    time = pd.to_datetime(time) - pd.Timestamp(0)
+    time = int(np.ceil(time.total_seconds()))
+
+    return time
