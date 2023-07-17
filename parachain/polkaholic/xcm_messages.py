@@ -7,7 +7,7 @@ from string import Template
 
 
 def get_data():
-    """Retrieve data on XCM transfers from Polkaholic's dataset on Google Big
+    """Retrieve data on XCM messages from Polkaholic's dataset on Google Big
     Query and return a dataframe.
     """
     df_chains = chains.get_data()
@@ -18,21 +18,21 @@ def get_data():
         'Polkadot' as relayChain,
         CAST(origination_ts AS STRING) timestamp,
         origination_para_id origin,
-        destination_para_id destination
-      FROM `substrate-etl.crypto_polkadot.xcmtransfers`
+        destination_para_id destination,
+        version
+      FROM `substrate-etl.crypto_polkadot.xcm`
       WHERE DATE(origination_ts) >= "$start"
       AND DATE(origination_ts) < "$end"
-      AND destination_execution_status = 'success'
     ), kusama_xcm AS (
       SELECT
         'Kusama' as relayChain,
         CAST(origination_ts AS STRING) timestamp,
         origination_para_id origin,
-        destination_para_id destination
-      FROM `substrate-etl.crypto_kusama.xcmtransfers`
+        destination_para_id destination,
+        version
+      FROM `substrate-etl.crypto_kusama.xcm`
       WHERE DATE(origination_ts) >= "$start"
       AND DATE(origination_ts) < "$end"
-      AND destination_execution_status = 'success'
       ORDER BY 2 DESC
     )
     SELECT *
@@ -42,7 +42,7 @@ def get_data():
     FROM kusama_xcm
     ORDER BY 2 DESC
     """)
-    data = PolkaholicExtractor().extract(query)
+    data = PolkaholicExtractor().extract(query, start="2023-01-01")
     df = PolkaholicTransformer(data).to_frame()
 
     df["date"] = df["timestamp"].map(lambda t: convert_timestamp(t))
@@ -51,7 +51,7 @@ def get_data():
     df = df.merge(df_chains, "left", left_on=["relayChain", "destination"],
                   right_on=["relayChain", "paraID"])
     df = df.reindex(columns=["relayChain", "date", "timestamp", "chainName_x",
-                             "chainName_y"])
+                             "chainName_y", "version"])
     df = df.rename(columns={"chainName_x": "origin",
                             "chainName_y": "destination"})
 
@@ -59,6 +59,6 @@ def get_data():
 
 
 if __name__ == "__main__":
-    transfers = get_data()
+    messages = get_data()
     with pd.option_context("display.max_columns", None):
-        print(transfers)
+        print(messages)
