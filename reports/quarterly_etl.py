@@ -38,7 +38,7 @@ def to_epoch(time):
     """Convert a time string to epoch time (i.e. the number of seconds from
     1970-01-01 00:00:00.
     """
-    time = pd.to_datetime(time) - pd.Timestamp(0)
+    time = pd.Timestamp(time) - pd.Timestamp(0)
     time = int(np.ceil(time.total_seconds()))
 
     return time
