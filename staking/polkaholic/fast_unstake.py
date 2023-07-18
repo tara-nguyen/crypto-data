@@ -17,8 +17,8 @@ def get_data():
       JOIN (SELECT * FROM substrate-etl.crypto_polkadot.extrinsics0) ex
       ON ev.extrinsic_id = ex.extrinsic_id
       WHERE
-        DATE(ex.block_time) >= "$start"
-        AND DATE(ex.block_time) < "$end"
+        ex.block_time >= "$start"
+        AND ex.block_time < "$end"
         AND ex.section = "fastUnstake"
         AND ev.method = "Unbonded"
       ORDER BY 1 DESC
