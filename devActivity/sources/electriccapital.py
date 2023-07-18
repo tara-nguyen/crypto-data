@@ -10,7 +10,7 @@ class ElectricCapitalExtractor:
         self.url += f"{metric}/{ecosystem}"
 
     def extract(self):
-        data = extract(self.method, self.url, data="")["series"]
+        data = extract(self.method, self.url)["series"]
 
         return data
 

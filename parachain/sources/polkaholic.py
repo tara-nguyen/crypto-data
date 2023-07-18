@@ -6,7 +6,7 @@ from reports.quarterly_etl import QuarterlyReport, convert_timestamp, extract
 
 class PolkaholicExtractor:
     def __init__(self, from_bigquery=True, credentials="service-account.json",
-                 route="/xcmtransfers"):
+                 route=""):
         self.from_bigquery = from_bigquery
         if from_bigquery:
             credentials = service_account.Credentials.from_service_account_file(
