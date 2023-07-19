@@ -21,8 +21,7 @@ class PolkaholicExtractor:
                          start=QuarterlyReport().start_time,
                          end=QuarterlyReport().end_time, **kwargs):
         """Extract data from Polkaholic."""
-        start, end = [convert_timestamp(t, self.timestamp_format)
-                      for t in [start, end]]
+        start, end = [t.strftime(self.timestamp_format) for t in [start, end]]
         query = query_template.substitute(start=start, end=end, **kwargs)
         data = self.client.query(query)
 
@@ -50,6 +49,6 @@ class PolkaholicTransformer:
         if isinstance(self.data, bigquery.QueryJob):
             df = self.data.to_dataframe()
         else:
-            df = pd.json_normalize(self.data)
+            df = pd.json_normalize(self.data, sep="_")
 
         return df

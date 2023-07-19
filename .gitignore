@@ -3,3 +3,5 @@
 service-account.json
 __pycache__
 authorization.py
+credentials-sheets.json
+*.pickle

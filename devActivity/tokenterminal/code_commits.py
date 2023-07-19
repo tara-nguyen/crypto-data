@@ -10,8 +10,8 @@ def get_data():
     trf = TokenTerminalTransformer(data)
     start = QuarterlyReport().start_time - pd.Timedelta(days=29)
     df = trf.to_frame(start=start).sort_values("date")
-    df = df.rolling(30, on="date").sum().dropna()
-    df = df.sort_values("date", ascending=False)
+    df = df.rolling(30, on="date").mean().dropna()
+    df = df.rename(columns={"value": "codeCommits30dayAverage"})
 
     return df
 

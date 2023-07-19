@@ -45,7 +45,7 @@ def get_data():
     data = PolkaholicExtractor().extract(query)
     df = PolkaholicTransformer(data).to_frame()
 
-    df["date"] = df["timestamp"].map(lambda t: convert_timestamp(t))
+    df["date"] = df["timestamp"].str.slice(stop=10)
     df = df.merge(df_chains, "left", left_on=["relayChain", "origin"],
                   right_on=["relayChain", "paraID"])
     df = df.merge(df_chains, "left", left_on=["relayChain", "destination"],

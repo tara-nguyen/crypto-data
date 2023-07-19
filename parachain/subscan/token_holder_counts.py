@@ -5,7 +5,7 @@ from parachain.sources.subscan import SubscanNetworks, SubscanExtractor
 
 def get_data(start=QuarterlyReport().start_time,
              end=QuarterlyReport().end_time):
-    start, end = [convert_timestamp(t, "%Y-%m-%d") for t in [start, end]]
+    start, end = [t.strftime("%Y-%m-%d") for t in [start, end]]
     polkadot_chains = SubscanNetworks().get_network("polkadot")
     kusama_chains = SubscanNetworks().get_network("kusama")
 
@@ -20,8 +20,8 @@ def get_data(start=QuarterlyReport().start_time,
         df_chain["parachain"] = chain
         df = pd.concat([df, df_chain])
 
-    df["date"] = df["time_utc"].map(lambda t: convert_timestamp(t))
-    df = df.rename(columns={"total": "accounts"})
+    df["date"] = df["time_utc"].str.slice(stop=10)
+    df = df.rename(columns={"total": "holders"})
     df = df.reindex(columns=["network", "parachain", "date", "accounts"])
 
     return df

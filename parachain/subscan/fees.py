@@ -6,7 +6,7 @@ from parachain.coingecko import prices
 
 def get_data(start=QuarterlyReport().start_time,
              end=QuarterlyReport().end_time):
-    start, end = [convert_timestamp(t, "%Y-%m-%d") for t in [start, end]]
+    start, end = [t.strftime("%Y-%m-%d") for t in [start, end]]
     polkadot_chains = SubscanNetworks().get_network("polkadot")
     kusama_chains = SubscanNetworks().get_network("kusama")
     chains = polkadot_chains | kusama_chains
@@ -23,10 +23,10 @@ def get_data(start=QuarterlyReport().start_time,
         df_chain["parachain"] = chain
         df = pd.concat([df, df_chain])
 
-    df["date"] = df["time_utc"].map(lambda t: convert_timestamp(t))
+    df["date"] = pd.to_datetime(df["time_utc"]).dt.strftime("%Y-%m-%d")
     df = df.rename(columns={"total": "fee"})
-    df = df.merge(prices.get_data(start, end), left_on=["parachain", "date"],
-                  right_on=["chain", "date"])
+    df = df.merge(prices.get_data(["moonbeam"], start=start, end=end),
+                  left_on=["parachain", "date"], right_on=["chain", "date"])
     df = df.eval("feeUSD = fee / prices")
     df = df.reindex(columns=["network", "parachain", "date", "feeUSD"])
 
@@ -34,6 +34,6 @@ def get_data(start=QuarterlyReport().start_time,
 
 
 if __name__ == "__main__":
-    print(pd.Timestamp)
+    print(pd.Timestamp.now())
     fees = get_data()
     print(fees)

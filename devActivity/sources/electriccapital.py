@@ -1,5 +1,5 @@
 import pandas as pd
-from reports.quarterly_etl import QuarterlyReport, extract, convert_timestamp
+from reports.quarterly_etl import QuarterlyReport, extract, to_epoch
 from functools import reduce
 
 
@@ -23,8 +23,7 @@ class ElectricCapitalTransformer:
     def to_frame(self, start=QuarterlyReport().start_time,
                  end=QuarterlyReport().end_time, new_cols=None):
         """Convert json-encoded content to a dataframe."""
-        start, end = [convert_timestamp(t, self.timestamp_format)
-                      for t in [start, end]]
+        start, end = [to_epoch(t) * 1e3 for t in [start, end]]
 
         dfs = []
         for d in self.data:
@@ -32,9 +31,9 @@ class ElectricCapitalTransformer:
             dfs.append(pd.DataFrame(d["data"], columns=cols))
         df = reduce(lambda l, r: l.merge(r, on="timestamp"), dfs)
 
+        df = df.query("@start <= timestamp <= @end").copy()
         df["date"] = pd.to_datetime(df["timestamp"], unit="ms")
         df["date"] = df["date"].dt.strftime(self.timestamp_format)
-        df = df.query("@start <= date <= @end")
         df = df.reindex(columns=["date"] + df.columns[1:-1].tolist())
         if new_cols is not None:
             df = df.set_axis(["date"] + new_cols, axis=1)
