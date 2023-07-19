@@ -1,38 +1,44 @@
 import pandas as pd
-from reports.quarterly_etl import QuarterlyReport, to_epoch, convert_timestamp
+from reports.quarterly_etl import QuarterlyReport, to_epoch
 from parachain.sources.coingecko import (CoingeckoExtractor,
                                          CoingeckoTransformer, CoingeckoCoins)
 from parachain.coingecko import coin_ids
 from time import perf_counter_ns
 
 
-def get_data(start=QuarterlyReport().start_time,
+def get_data(coins=coin_ids.get_data(), start=QuarterlyReport().start_time,
              end=QuarterlyReport().end_time):
     """Retrieve price data from CoinGecko and return a dataframe."""
-    start = to_epoch(start)
-    end = to_epoch(end)
+    start, end = [to_epoch(t) for t in [start, end]]
     params = {"vs_currency": "usd", "from": start, "to": end}
+    metric = "prices"
 
-    df = pd.DataFrame([])
-    for coin_id in coin_ids.get_data():
+    if isinstance(coins, list):
+        df = pd.DataFrame([])
+        for coin_id in coins:
+            data = CoingeckoExtractor(
+                f"/{coin_id}/market_chart/range").extract(params)
+            df_coin = CoingeckoTransformer(data).to_frame(metric)
+            df_coin["id"] = coin_id
+            df = pd.concat([df, df_coin])
+    elif isinstance(coins, str):
         data = CoingeckoExtractor(
-            f"/{coin_id}/market_chart/range").extract(params)
-        df_coin = CoingeckoTransformer(data).to_frame("prices")
-        df_coin["id"] = coin_id
-        df = pd.concat([df, df_coin])
+            f"/{coins}/market_chart/range").extract(params)
+        df = CoingeckoTransformer(data).to_frame(metric)
+    else:
+        raise Exception("Invalid data type for the first argument")
 
-    df["date"] = df["timestamp"].map(lambda t: convert_timestamp(t, "%Y-%m-%d",
-                                                                 unit="ms"))
-    df = df.merge(CoingeckoCoins().coins)
-    df = df.reindex(columns=["chain", "date", "prices"])
+    df["date"] = pd.to_datetime(df["timestamp"],
+                                unit="ms").dt.strftime("%Y-%m-%d")
+    if isinstance(coins, list):
+        df = df.merge(CoingeckoCoins().coins)
+        df = df.reindex(columns=["chain", "date", "prices"])
+    elif isinstance(coins, str):
+        df = df.reindex(columns=["date", "prices"])
 
     return df
 
 
 if __name__ == "__main__":
-    print(pd.Timestamp.now())
-    t0 = perf_counter_ns()
-    prices = get_data()
-    t1 = perf_counter_ns()
-    print(f"Run time: {(t1 - t0) / 1e9 / 60:.2f} minutes")
-    print(prices)
+    prices = get_data(["polkadot", "kusama"])
+    print(prices.sort_values(["chain", "date"]))

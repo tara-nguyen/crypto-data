@@ -1,6 +1,5 @@
 import pandas as pd
 import chains
-from reports.quarterly_etl import convert_timestamp
 from parachain.sources.polkaholic import (PolkaholicExtractor,
                                           PolkaholicTransformer)
 from string import Template
@@ -45,7 +44,7 @@ def get_data():
     data = PolkaholicExtractor().extract(query, start="2023-01-01")
     df = PolkaholicTransformer(data).to_frame()
 
-    df["date"] = df["timestamp"].map(lambda t: convert_timestamp(t))
+    df["date"] = df["timestamp"].str.slice(stop=10)
     df = df.merge(df_chains, "left", left_on=["relayChain", "origin"],
                   right_on=["relayChain", "paraID"])
     df = df.merge(df_chains, "left", left_on=["relayChain", "destination"],
