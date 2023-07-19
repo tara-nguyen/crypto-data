@@ -61,17 +61,6 @@ def extract(method, url, **kwargs):
     return data
 
 
-def convert_timestamp(t, timestamp_format=None, unit=None, stop=10):
-    if isinstance(t, str):
-        new_t = t[:stop]
-    else:
-        new_t = pd.to_datetime(t, unit=unit)
-        if timestamp_format is not None:
-            new_t = new_t.strftime(timestamp_format)
-
-    return new_t
-
-
 def to_epoch(time):
     """Convert a time string to epoch time (i.e. the number of seconds from
     1970-01-01 00:00:00.

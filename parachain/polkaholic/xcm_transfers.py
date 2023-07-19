@@ -1,6 +1,5 @@
 import pandas as pd
 import chains
-from reports.quarterly_etl import convert_timestamp
 from parachain.sources.polkaholic import (PolkaholicExtractor,
                                           PolkaholicTransformer)
 from string import Template

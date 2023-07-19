@@ -1,5 +1,5 @@
 import pandas as pd
-from reports.quarterly_etl import QuarterlyReport, to_epoch, convert_timestamp
+from reports.quarterly_etl import QuarterlyReport, to_epoch
 from defi.sources.statescan import StatescanExtractor
 
 

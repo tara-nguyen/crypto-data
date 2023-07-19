@@ -1,7 +1,7 @@
 import pandas as pd
 from google.cloud import bigquery
 from google.oauth2 import service_account
-from reports.quarterly_etl import QuarterlyReport, convert_timestamp, extract
+from reports.quarterly_etl import QuarterlyReport, extract
 
 
 class PolkaholicExtractor:

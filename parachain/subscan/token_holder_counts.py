@@ -1,5 +1,5 @@
 import pandas as pd
-from reports.quarterly_etl import QuarterlyReport, convert_timestamp
+from reports.quarterly_etl import QuarterlyReport
 from parachain.sources.subscan import SubscanNetworks, SubscanExtractor
 
 

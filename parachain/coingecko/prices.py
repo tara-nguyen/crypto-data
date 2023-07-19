@@ -1,5 +1,5 @@
 import pandas as pd
-from reports.quarterly_etl import QuarterlyReport, to_epoch, convert_timestamp
+from reports.quarterly_etl import QuarterlyReport, to_epoch
 from parachain.sources.coingecko import (CoingeckoExtractor,
                                          CoingeckoTransformer, CoingeckoCoins)
 from parachain.coingecko import coin_ids
