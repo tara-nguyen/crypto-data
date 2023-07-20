@@ -1,9 +1,9 @@
-from staking.sources.polkaholic import PolkaholicExtractor
+from staking_stakingReport.sources.polkaholic import PolkaholicExtractor
 from string import Template
 
 
 def get_data():
-    """Retrieve data on staking payouts from Polkaholic's dataset on Google Big
+    """Retrieve data on staking_stakingReport payouts from Polkaholic's dataset on Google Big
     Query and return a list of rewarded validators.
     """
     query = Template("""
@@ -16,7 +16,7 @@ def get_data():
     WHERE
       ex.block_time >= "$start"
       AND ex.block_time < "$end"
-      AND ev.section = "staking"
+      AND ev.section = "staking_stakingReport"
       AND ev.method = "PayoutStarted"
     """)
     validators = PolkaholicExtractor().extract(query)["validator"].unique()

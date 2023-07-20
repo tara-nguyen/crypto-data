@@ -1,13 +1,13 @@
-import staking.polkaholic.rewarded_validators as rv
-import staking.subscan.pools as p
+import staking_stakingReport.polkaholic.rewarded_validators as rv
+import staking_stakingReport.subscan.pools as p
 import pandas as pd
-from staking.sources.polkaholic import PolkaholicExtractor
+from staking_stakingReport.sources.polkaholic import PolkaholicExtractor
 from string import Template
 from time import perf_counter_ns
 
 
 def get_data():
-    """Retrieve data on staking rewards from Polkaholic's dataset on Google Big
+    """Retrieve data on staking_stakingReport rewards from Polkaholic's dataset on Google Big
     Query and return a dictionary containing four dataframes.
     """
     query = Template("""
@@ -21,7 +21,7 @@ def get_data():
     WHERE
       ex.block_time >= "$start"
       AND ex.block_time < "$end"
-      AND ev.section = "staking"
+      AND ev.section = "staking_stakingReport"
       AND ev.method = "Rewarded"
     ORDER BY 1 DESC
     """)

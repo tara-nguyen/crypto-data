@@ -1,6 +1,6 @@
 import pandas as pd
 from reports.staking_etl import StakingReport, get_time
-from staking.sources.subsquid import SubsquidExtractor, SubsquidTransformer
+from staking_stakingReport.sources.subsquid import SubsquidExtractor, SubsquidTransformer
 from string import Template
 from concurrent.futures import ThreadPoolExecutor
 from time import perf_counter_ns

@@ -1,9 +1,9 @@
-from staking.sources.subsquid import SubsquidExtractor, SubsquidTransformer
+from staking_stakingReport.sources.subsquid import SubsquidExtractor, SubsquidTransformer
 from string import Template
 
 
 def get_data():
-    """Retrieve staking data from Subsquid and return a dataframe."""
+    """Retrieve staking_stakingReport data from Subsquid and return a dataframe."""
     metric = "hourlyCharts"
     template = Template(
         '{"query": "query MyQuery {$metric(where: {timestamp_gte:\\"$start\\", '

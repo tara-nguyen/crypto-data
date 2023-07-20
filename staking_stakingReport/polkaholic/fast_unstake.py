@@ -1,4 +1,4 @@
-from staking.sources.polkaholic import PolkaholicExtractor
+from staking_stakingReport.sources.polkaholic import PolkaholicExtractor
 from string import Template
 import pandas as pd
 

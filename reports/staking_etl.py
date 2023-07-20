@@ -26,7 +26,7 @@ def to_epoch(time):
 
 
 def get_era(time):
-    """Convert a timestamp to staking era ID."""
+    """Convert a timestamp to staking_stakingReport era ID."""
     time_diff = (
             pd.Timestamp(time, tz="utc") - pd.Timestamp(2020, 6, 21, tz="utc"))
     era = 20 + time_diff.days
@@ -35,7 +35,7 @@ def get_era(time):
 
 
 def get_time(era, time_format=StakingReport().timestamp_format):
-    """Convert a staking era ID to a time string with the specified format."""
+    """Convert a staking_stakingReport era ID to a time string with the specified format."""
     time = (pd.to_timedelta(era - StakingReport().start_era, "D")
             + pd.Timestamp(StakingReport().start_time))
     if isinstance(era, int):
