@@ -35,7 +35,7 @@ def get_era(time):
 
 
 def get_time(era, time_format=StakingReport().timestamp_format):
-    """Convert a staking_stakingReport era ID to a time string with the specified format."""
+    """Convert a staking era ID to a time string with the specified format."""
     time = (pd.to_timedelta(era - StakingReport().start_era, "D")
             + pd.Timestamp(StakingReport().start_time))
     if isinstance(era, int):
