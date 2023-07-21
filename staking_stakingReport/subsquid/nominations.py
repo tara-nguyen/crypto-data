@@ -1,13 +1,14 @@
 import pandas as pd
 from reports.staking_etl import StakingReport, get_time
-from staking_stakingReport.sources.subsquid import SubsquidExtractor, SubsquidTransformer
+from staking_stakingReport.sources.subsquid import (SubsquidExtractor,
+                                                    SubsquidTransformer)
 from string import Template
 from concurrent.futures import ThreadPoolExecutor
 from time import perf_counter_ns
 
 
 def get_data(start=StakingReport().start_era, end=StakingReport().end_era):
-    """Retrieve staking_stakingReport nomination data from Subsquid and return a dataframe."""
+    """Retrieve staking nomination data from Subsquid and return a dataframe."""
     metric = "eraNominations"
     template = Template(
         '{"query": "query MyQuery {$metric(limit: $limit, offset: $offset, '
@@ -39,4 +40,4 @@ if __name__ == "__main__":
     t1 = perf_counter_ns()
     print(f"Run time: {(t1 - t0) / 1e9 / 60:.2f} minutes")
     with pd.option_context("display.max_columns", None):
-        print(nominations["nominator"].nunique())
+        print(nominations)

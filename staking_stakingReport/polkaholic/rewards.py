@@ -7,7 +7,7 @@ from time import perf_counter_ns
 
 
 def get_data():
-    """Retrieve data on staking_stakingReport rewards from Polkaholic's dataset on Google Big
+    """Retrieve data on staking rewards from Polkaholic's dataset on Google Big
     Query and return a dictionary containing four dataframes.
     """
     query = Template("""
@@ -21,7 +21,7 @@ def get_data():
     WHERE
       ex.block_time >= "$start"
       AND ex.block_time < "$end"
-      AND ev.section = "staking_stakingReport"
+      AND ev.section = "staking"
       AND ev.method = "Rewarded"
     ORDER BY 1 DESC
     """)

@@ -1,5 +1,5 @@
-import staking_stakingReport.subsquid.supply as sup
 import staking_stakingReport.subsquid.stake_inflation as si
+from staking_stakingReport.subsquid import supply
 from concurrent.futures import ThreadPoolExecutor
 
 
@@ -8,7 +8,7 @@ def get_data():
     containing two dataframes.
     """
     with ThreadPoolExecutor() as exe:
-        futures = [exe.submit(module.get_data) for module in [sup, si]]
+        futures = [exe.submit(module.get_data) for module in [supply, si]]
     df_supply, df_stake_inflation = [future.result() for future in futures]
 
     # Total stake and tokens in parachains
@@ -37,6 +37,4 @@ if __name__ == "__main__":
     staking = get_data()
     for df in staking.values():
         print()
-        # print(df)
-        df = df.query("date > '2023-05-15'").astype(str)
         print(df.to_string())

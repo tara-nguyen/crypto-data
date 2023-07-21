@@ -1,5 +1,5 @@
-import staking_stakingReport.subscan.pools as p
 from staking_stakingReport.sources.polkaholic import PolkaholicExtractor
+from staking_stakingReport.subscan import pools
 from string import Template
 
 
@@ -34,12 +34,12 @@ def get_data(order_by="stake", direction="DESC"):
     """)
     df = PolkaholicExtractor().extract(query, order_by=order_by,
                                        direction=direction)
-    df = df.merge(p.get_data(), left_on="poolId", right_on="id")
+    df = df.merge(pools.get_data(), left_on="poolId", right_on="id")
     df = df.reindex(columns=["pool", "stake", "members"])
 
     return df
 
 
 if __name__ == "__main__":
-    unstake = get_data("members")
-    print(unstake)
+    stats = get_data("members")
+    print(stats)

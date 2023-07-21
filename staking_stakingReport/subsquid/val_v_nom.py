@@ -1,4 +1,5 @@
-from staking_stakingReport.sources.subsquid import SubsquidExtractor, SubsquidTransformer
+from staking_stakingReport.sources.subsquid import (SubsquidExtractor,
+                                                    SubsquidTransformer)
 from string import Template
 
 
@@ -14,7 +15,7 @@ def get_data():
         'stakingTotalStakeValidators stakingTotalStakeNominatorsActive '
         'stakingMinActiveNominatorStake}}", "operationName": "MyQuery"}')
 
-    extractor = SubsquidExtractor("gs_stats_new")
+    extractor = SubsquidExtractor("gs_stats")
     data = extractor.extract(template, metric)
 
     transformer = SubsquidTransformer(data).to_frame().get_daily_data()

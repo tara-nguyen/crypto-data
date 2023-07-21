@@ -19,10 +19,9 @@ class PolkadotjsExtractor:
 class PolkadotjsTransformer:
     def __init__(self, data):
         self.data = data
-        self.df = None
 
     def to_frame(self, **kwargs):
-        self.df = pd.DataFrame([[d.value for d in dat] for dat in self.data],
-                               **kwargs)
+        df = pd.DataFrame([[d.value for d in dat] for dat in self.data],
+                          **kwargs)
 
-        return self
+        return df

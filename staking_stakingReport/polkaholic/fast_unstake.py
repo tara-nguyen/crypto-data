@@ -1,6 +1,6 @@
+import pandas as pd
 from staking_stakingReport.sources.polkaholic import PolkaholicExtractor
 from string import Template
-import pandas as pd
 
 
 def get_data():
@@ -35,9 +35,9 @@ def get_data():
     df["date"] = pd.to_datetime(df["date"])
 
     # Make all dates appear in the dataframe and fill missing values with zeros
-    index = pd.date_range(df["date"].max(), df["date"].min(), freq="-1D")
-    df = df.set_index("date").reindex(index=index).reset_index()
-    df = df.fillna(0).rename(columns={"index": "date"})
+    index = pd.date_range(df["date"].max(), df["date"].min(), freq="-1D",
+                          name="date")
+    df = df.set_index("date").reindex(index=index, fill_value=0).reset_index()
     df["date"] = df["date"].astype(str)
 
     return df

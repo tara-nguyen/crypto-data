@@ -1,6 +1,7 @@
 import pandas as pd
 from reports.staking_etl import StakingReport, get_time
-from staking_stakingReport.sources.subsquid import SubsquidExtractor, SubsquidTransformer
+from staking_stakingReport.sources.subsquid import (SubsquidExtractor,
+                                                    SubsquidTransformer)
 from string import Template
 from concurrent.futures import ThreadPoolExecutor
 from time import perf_counter_ns
@@ -39,8 +40,5 @@ if __name__ == "__main__":
     stake = get_data(StakingReport().end_era-2)
     t1 = perf_counter_ns()
     print(f"Run time: {(t1 - t0) / 1e9 / 60:.2f} minutes")
-    # stake = StakeChangesByDate(stake, ["totalStake", "selfStake"]).get_data(
-    #     ["2023-02-28", "2023-03-01"])
-    # stake = stake.sort_values("selfStake_2023-02-28")
     with pd.option_context("display.max_columns", None):
         print(stake)
