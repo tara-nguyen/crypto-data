@@ -15,12 +15,26 @@ class QuarterlyReport:
 class GoogleSheets:
     def __init__(self, spreadsheet=QuarterlyReport().project_name):
         self.spreadsheet = spreadsheet
-        self.sheets = dict(prices_v_activity="devActivity_prices_v_activity",
-                           dev_v_commits="devActivity_dev_v_commits",
-                           developers="devActivity_developers",
-                           fast_unstake="staking_fast_unstake",
-                           rewards="staking_rewards",
-                           nominator_prefs="staking_nominator_prefs")
+        self.sheets = dict(
+            prices_v_activity="devActivity_prices_v_activity",
+            dev_v_commits="devActivity_dev_v_commits",
+            developers="devActivity_developers",
+            fast_unstake="staking_fast_unstake",
+            rewards="staking_rewards",
+            nominator_prefs="staking_nominator_prefs",
+            holder_distributions_polkadot="decentralization_holder_distributions_polkadot",
+            holder_distributions_kusama="decentralization_holder_distributions_kusama",
+            token_holders="parachain_token_holders",
+            xcm_transfers_q2="parachain_xcm_transfers_q2",
+            xcm_transfer_channels_q2="parachain_xcm_transfer_channels_q2",
+            xcm_transfers_h1="parachain_xcm_transfers_h1",
+            xcm_transfer_channels_h1="parachain_xcm_transfer_channels_h1",
+            xcm_transfers_all_time="parachain_xcm_transfers_all_time",
+            xcm_transfer_channels_all_time="parachain_xcm_transfer_channels_all_time",
+            xcm_messages_summary="parachain_xcm_messages_summary",
+            xcm_v3_polkadot="parachain_xcm_v3_polkadot",
+            xcm_v3_kusama="parachain_xcm_v3_kusama",
+            chain_fees="parachain_chain_fees")
 
     def load(self, sheet_key, df):
         """Load a dataframe to Google Sheets."""
@@ -59,6 +73,17 @@ def extract(method, url, **kwargs):
     data = resp.json()
 
     return data
+
+
+def convert_timestamp(t, timestamp_format=None, unit=None, stop=10):
+    if isinstance(t, str):
+        new_t = t[:stop]
+    else:
+        new_t = pd.to_datetime(t, unit=unit)
+        if timestamp_format is not None:
+            new_t = new_t.strftime(timestamp_format)
+
+    return new_t
 
 
 def to_epoch(time):
