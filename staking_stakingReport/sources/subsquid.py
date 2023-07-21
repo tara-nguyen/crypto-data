@@ -10,8 +10,7 @@ from itertools import product
 class SubsquidExtractor:
     def __init__(self, path_name):
         self.method = "POST"
-        paths = dict(gs_stats_old="/gs-stats-polkadot/graphql",
-                     gs_stats_new="/gs-stats-polkadot/v/v1122/graphql",
+        paths = dict(gs_stats="/gs-stats-polkadot/graphql",
                      explorer="/polkadot-explorer/graphql")
         self.url = "https://squid.subsquid.io" + paths[path_name]
         self.headers = {"Content-Type": "application/json"}

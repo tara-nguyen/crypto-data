@@ -1,10 +1,9 @@
-import staking.subsquid.validator_stake as vs
-import staking.subsquid.multi_v_single as ms
-import staking.subsquid.nominations as nom
-import staking.parity.validator_commission as vc
 import pandas as pd
 from reports.staking_etl import StakingReport, get_era
-from staking.sources.subsquid import SubsquidSnapshot, StakeChangesByDate
+from staking_stakingReport.subsquid import validator_stake as vs
+from staking_stakingReport.subsquid import multi_v_single as ms
+from staking_stakingReport.subsquid import nominations as nom
+from staking_stakingReport.polkadotjs import validator_commission as vc
 from concurrent.futures import ThreadPoolExecutor
 from functools import reduce
 from time import perf_counter_ns

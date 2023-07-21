@@ -1,5 +1,5 @@
 import pandas as pd
-from staking.sources.subscan import SubscanExtractor
+from staking_stakingReport.sources.subscan import SubscanExtractor
 
 
 def get_data():
@@ -25,5 +25,4 @@ def get_data():
 if __name__ == "__main__":
     pools = get_data()
     with pd.option_context("display.max_columns", None):
-        print(pools.set_index(["id", "pool"]).to_string())
-    print(pools["total_bonded"].sum())
+        print(pools)

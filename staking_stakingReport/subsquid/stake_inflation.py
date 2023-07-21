@@ -1,4 +1,5 @@
-from staking.sources.subsquid import SubsquidExtractor, SubsquidTransformer
+from staking_stakingReport.sources.subsquid import (SubsquidExtractor,
+                                                    SubsquidTransformer)
 from string import Template
 
 
@@ -11,7 +12,7 @@ def get_data():
         'slotsTokensLockedInParachains stakingInflationRatio '
         'stakingRewardsRatio}}", "operationName": "MyQuery"}')
 
-    extractor = SubsquidExtractor("gs_stats_new")
+    extractor = SubsquidExtractor("gs_stats")
     data = extractor.extract(template, metric)
 
     transformer = SubsquidTransformer(data).to_frame().get_daily_data()
@@ -27,4 +28,4 @@ def get_data():
 
 if __name__ == "__main__":
     stake = get_data()
-    # print(stake)
+    print(stake)

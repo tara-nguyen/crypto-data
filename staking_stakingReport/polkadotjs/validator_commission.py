@@ -1,7 +1,7 @@
 import pandas as pd
 from reports.staking_etl import StakingReport, get_time, get_era
-from staking.sources.polkadotjs import (PolkadotjsExtractor,
-                                        PolkadotjsTransformer)
+from staking_stakingReport.sources.polkadotjs import (PolkadotjsExtractor,
+                                                      PolkadotjsTransformer)
 
 
 def get_data(start=StakingReport().start_era, end=StakingReport().end_era):
@@ -11,7 +11,7 @@ def get_data(start=StakingReport().start_era, end=StakingReport().end_era):
     for era in range(max(start, current_era - extractor.history_depth), end):
         data = extractor.extract("Staking", "ErasValidatorPrefs", [era])
         df_era = PolkadotjsTransformer(data).to_frame(
-            columns=["validator", "commission"]).df
+            columns=["validator", "commission"])
         df_era["era"] = era
         df_era["date"] = get_time(era, "%Y-%m-%d")
         df = pd.concat([df, df_era])
