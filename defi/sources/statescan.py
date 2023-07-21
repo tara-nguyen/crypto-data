@@ -1,4 +1,3 @@
-import pandas as pd
 from reports.quarterly_etl import extract
 
 

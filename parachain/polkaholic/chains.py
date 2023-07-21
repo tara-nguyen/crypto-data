@@ -9,13 +9,11 @@ def get_data():
     df = df.query("relayChain in ['polkadot', 'kusama']").copy()
     df["relayChain"] = df["relayChain"].str.title()
     df["chainName"] = df["chainName"].str.title()
-    df["paraID"] = df["chainID"].map(lambda x: x - 20000 if x > 20000 else x)
-    df = df.replace(2, 0)
-    df = df.reindex(columns=["relayChain", "paraID", "chainName"])
+    df = df.reindex(columns=["chainID", "chainName"])
 
     return df
 
 
 if __name__ == "__main__":
     chains = get_data()
-    print(chains)
+    print(chains.to_string())

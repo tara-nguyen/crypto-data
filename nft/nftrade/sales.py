@@ -1,11 +1,13 @@
 import pandas as pd
-from quarterly_etl import QuarterlyReport
-from sources.nftrade import NftradeExtractor, NftradeTransformer
+from reports.quarterly_etl import QuarterlyReport
+from nft.sources.nftrade import NftradeExtractor, NftradeTransformer
 from parachain.coingecko import prices
 
 
 def get_data(start=QuarterlyReport().start_time,
              end=QuarterlyReport().end_time):
+    df_prices = prices.get_data("moonbeam", start=start, end=end)
+
     start, end = [t.strftime("%Y-%m-%d") for t in [start, end]]
     data_all = []
     skip = 0
@@ -22,7 +24,7 @@ def get_data(start=QuarterlyReport().start_time,
 
     df = df.query("@start <= createdAt <= @end and type == 'SOLD'").copy()
     df["date"] = df["createdAt"].str.slice(stop=10)
-    df = df.merge(prices.get_data("moonbeam", start=start, end=end))
+    df = df.merge(df_prices)
     df["volume"] = df["price"].astype(float) * df["prices"]
     df = df.reindex(columns=["date", "volume"])
 
