@@ -1,4 +1,3 @@
-import ezsheets
 import numpy as np
 import pandas as pd
 from requests import Session
@@ -10,57 +9,6 @@ class QuarterlyReport:
         self.start_time = pd.Timestamp(2023, 4, 1)
         self.end_time = pd.Timestamp(2023, 7, 1)
         self.networks = {"polkadot": 1e10, "kusama": 1e12}
-
-
-class GoogleSheets:
-    def __init__(self, spreadsheet=QuarterlyReport().project_name):
-        self.spreadsheet = spreadsheet
-        self.sheets = dict(
-            prices_v_activity="devActivity_prices_v_activity",
-            dev_v_commits="devActivity_dev_v_commits",
-            developers="devActivity_developers",
-            fast_unstake="staking_fast_unstake",
-            rewards="staking_rewards",
-            nominator_prefs="staking_nominator_prefs",
-            holder_distributions_polkadot="decentralization_holder_distributions_polkadot",
-            holder_distributions_kusama="decentralization_holder_distributions_kusama",
-            token_holders="parachain_token_holders",
-            xcm_transfers_q2="parachain_xcm_transfers_q2",
-            xcm_transfer_channels_q2="parachain_xcm_transfer_channels_q2",
-            xcm_transfers_h1="parachain_xcm_transfers_h1",
-            xcm_transfer_channels_h1="parachain_xcm_transfer_channels_h1",
-            xcm_transfers_all_time="parachain_xcm_transfers_all_time",
-            xcm_transfer_channels_all_time="parachain_xcm_transfer_channels_all_time",
-            xcm_messages_summary="parachain_xcm_messages_summary",
-            xcm_v3_polkadot="parachain_xcm_v3_polkadot",
-            xcm_v3_kusama="parachain_xcm_v3_kusama",
-            chain_fees="parachain_chain_fees")
-
-    def load(self, sheet_key, df):
-        """Load a dataframe to Google Sheets."""
-        while True:
-            load = input("Load to Google Sheets ([y]/n)? ").lower()
-            if load in ["y", "n"]:
-                break
-            print("Invalid response")
-
-        if load == "y":
-            try:
-                spr = ezsheets.Spreadsheet(self.spreadsheet)
-            except ezsheets.EZSheetsException:
-                spr = ezsheets.createSpreadsheet(self.spreadsheet)
-
-            sheet = self.sheets[sheet_key]
-            if sheet in spr.sheetTitles:
-                sh = spr.__getitem__(sheet)
-                print(f"Clearing '{sheet}' contents...")
-                sh.clear()
-            else:
-                print(f"Creating new sheet '{sheet}'...")
-                sh = spr.createSheet(sheet)
-            print("Updating sheet...")
-            sh.updateRows([df.columns.tolist()] + df.values.tolist())
-            print(f"Sheet '{sheet}' updated.")
 
 
 def extract(method, url, **kwargs):
@@ -75,20 +23,9 @@ def extract(method, url, **kwargs):
     return data
 
 
-def convert_timestamp(t, timestamp_format=None, unit=None, stop=10):
-    if isinstance(t, str):
-        new_t = t[:stop]
-    else:
-        new_t = pd.to_datetime(t, unit=unit)
-        if timestamp_format is not None:
-            new_t = new_t.strftime(timestamp_format)
-
-    return new_t
-
-
 def to_epoch(time):
     """Convert a time string to epoch time (i.e. the number of seconds from
-    1970-01-01 00:00:00.
+    1970-01-01 00:00:00).
     """
     time = pd.Timestamp(time) - pd.Timestamp(0)
     time = int(np.ceil(time.total_seconds()))
@@ -115,11 +52,3 @@ def get_token_amount(x, network):
             f'network must be either "{networks[0]}" or "{networks[1]}"')
 
     return x
-
-
-def print_and_load(title, df, sheet_key):
-    print()
-    print(f"-----{title}-----")
-    print(df)
-    print()
-    GoogleSheets().load(sheet_key, df)
