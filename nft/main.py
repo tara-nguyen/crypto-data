@@ -3,7 +3,7 @@ import nftrade.sales as ns
 import rmrk.sales as rs
 import tofunft.sales as ts
 import pandas as pd
-from reports.quarterly_etl import print_and_load as pl
+from reports.quarterly_etl import print_long_df
 
 
 def main():
@@ -25,7 +25,8 @@ def main():
     df.insert(0, "rmrk_kusama", df.pop("rmrk_kusama"))
     df = df.sort_index(ascending=False).reset_index()
 
-    pl("NFT Marketplace", df, "nft_marketplace")
+    print("NFT Marketplace")
+    print_long_df(df)
 
 
 if __name__ == "__main__":

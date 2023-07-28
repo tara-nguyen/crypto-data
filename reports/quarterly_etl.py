@@ -52,3 +52,12 @@ def get_token_amount(x, network):
             f'network must be either "{networks[0]}" or "{networks[1]}"')
 
     return x
+
+
+def print_long_df(df, head_len=10, tail_len=None):
+    if tail_len is None:
+        tail_len = head_len
+    if df.shape[0] > head_len + tail_len:
+        print(pd.concat([df.head(head_len), df.tail(tail_len)]).to_string())
+    else:
+        print(df.to_string())
