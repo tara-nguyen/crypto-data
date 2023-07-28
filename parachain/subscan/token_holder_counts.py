@@ -1,16 +1,14 @@
 import pandas as pd
 from reports.quarterly_etl import QuarterlyReport
-from parachain.sources.subscan import SubscanNetworks, SubscanExtractor
+from parachain.sources.subscan import SubscanChains, SubscanExtractor
 
 
 def get_data(ts=QuarterlyReport().end_time):
     ts = ts.strftime("%Y-%m-%d")
-    polkadot_chains = SubscanNetworks().get_network("polkadot")
-    kusama_chains = SubscanNetworks().get_network("kusama")
 
     df = pd.DataFrame([])
-    for chain in polkadot_chains | kusama_chains:
-        network = "Polkadot" if chain in polkadot_chains else "Kusama"
+    for chain in SubscanChains().chains:
+        network = "Polkadot" if chain in SubscanChains().polkadot else "Kusama"
         payload = {"start": ts, "end": ts, "format": "day",
                    "category": "AccountHolderTotal"}
         data = SubscanExtractor("/daily", 2, network, chain).extract(payload)
@@ -23,7 +21,7 @@ def get_data(ts=QuarterlyReport().end_time):
     df = df.rename(columns={"total": "holders"})
     df = df.reindex(columns=["network", "parachain", "holders"])
     df["holders"] = df["holders"].astype(int)
-    df = df.query("holders > 2e4").sort_values("holders", ascending=False)
+    df = df.sort_values("holders", ascending=False)
 
     return df
 

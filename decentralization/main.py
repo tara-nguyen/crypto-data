@@ -1,5 +1,5 @@
 import pandas as pd
-from reports.quarterly_etl import print_and_load as pl
+from reports.quarterly_etl import print_long_df
 
 
 def main():
@@ -15,9 +15,9 @@ def main():
             columns=["date", "type", "tokenAmount", "tokenPercent",
                      "holderCount", "holderPercent", "systemToken",
                      "systemTokenPercent", "systemAccounts"])
-
-        pl(f"Token Holder Distribution on {network.title()}", df_network,
-           f"holder_distributions_{network}")
+        print()
+        print(f"Token Holder Distribution on {network.title()}")
+        print_long_df(df_network)
 
 
 if __name__ == "__main__":
