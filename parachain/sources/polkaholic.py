@@ -12,7 +12,6 @@ class PolkaholicExtractor:
             credentials = service_account.Credentials.from_service_account_file(
                 credentials)
             self.client = bigquery.Client(credentials=credentials)
-            self.timestamp_format = "%Y-%m-%d"
         else:
             self.method = "GET"
             self.url = f"https://api.polkaholic.io{route}"
@@ -21,7 +20,7 @@ class PolkaholicExtractor:
                          start=QuarterlyReport().start_time,
                          end=QuarterlyReport().end_time, **kwargs):
         """Extract data from Polkaholic."""
-        start, end = [t.strftime(self.timestamp_format) for t in [start, end]]
+        start, end = [t.strftime("%Y-%m-%d") for t in [start, end]]
         query = query_template.substitute(start=start, end=end, **kwargs)
         data = self.client.query(query)
 

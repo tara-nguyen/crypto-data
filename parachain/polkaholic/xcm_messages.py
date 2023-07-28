@@ -1,16 +1,13 @@
 import pandas as pd
 import chains
-from parachain.sources.polkaholic import (PolkaholicExtractor,
-                                          PolkaholicTransformer)
+from parachain.sources.polkaholic import *
 from string import Template
 
 
-def get_data():
+def get_raw_data(path):
     """Retrieve data on XCM messages from Polkaholic's dataset on Google Big
-    Query and return a dataframe.
+    Query, save the dataset to a csv file, and return a dataframe.
     """
-    df_chains = chains.get_data()
-
     query = Template(
         """
         WITH polkadot_xcm AS (
@@ -21,24 +18,27 @@ def get_data():
             destination_para_id destination,
             version
           FROM `substrate-etl.crypto_polkadot.xcm`
-          WHERE origination_ts >= "$start"
-          AND origination_ts < "$end"
+          WHERE origination_ts < "$end"
+          AND origination_para_id != 0
+          AND destination_para_id != 0
+          ORDER BY 2 DESC
         ), kusama_xcm AS (
           SELECT
             'Kusama' as relayChain,
             CAST(origination_ts AS STRING) timestamp,
             CASE
               WHEN origination_para_id = 0 THEN 2
-              ELSE origination_para_id
+              ELSE origination_para_id + 2e4
             END origin,
             CASE
               WHEN destination_para_id = 0 THEN 2
-              ELSE destination_para_id
+              ELSE destination_para_id + 2e4
             END destination,
             version
           FROM `substrate-etl.crypto_kusama.xcm`
-          WHERE origination_ts >= "$start"
-          AND origination_ts < "$end"
+          WHERE origination_ts < "$end"
+          AND origination_para_id != 0
+          AND destination_para_id != 0
           ORDER BY 2 DESC
         )
         SELECT *
@@ -48,39 +48,52 @@ def get_data():
         FROM kusama_xcm
         ORDER BY 2 DESC
         """)
-    data = PolkaholicExtractor().extract(query, start=pd.Timestamp(2023, 1, 1))
+    data = PolkaholicExtractor().extract(query, end=pd.Timestamp(2023, 7, 21))
     df = PolkaholicTransformer(data).to_frame()
+    df.to_csv(path, index=False)
+
+    return df
+
+
+def get_data(path="xcm_messages_raw.csv"):
+    df_chains = chains.get_data()
+
+    try:
+        df = pd.read_csv(path)
+    except FileNotFoundError:
+        df = get_raw_data(path)
 
     df["date"] = df["timestamp"].str.slice(stop=10)
+    df["version"] = df["version"].map(lambda x: "Pre-v3" if x != "v3" else x)
     df = df.merge(df_chains, "left", left_on="origin", right_on="chainID")
     df = df.merge(df_chains, "left", left_on="destination", right_on="chainID")
     df = df.reindex(columns=["relayChain", "date", "timestamp", "chainName_x",
                              "chainName_y", "version"])
     df = df.rename(columns={"chainName_x": "origin",
                             "chainName_y": "destination"})
-    df = df.eval("channel = origin + destination")
+    df = df.eval("channel = origin.str.cat(destination, ' -> ')")
 
-    df_counts = df.groupby(["version", "relayChain"]).agg(
+    df_summary = df.groupby(["version", "relayChain"]).agg(
         {"channel": lambda x: x.nunique(),
          "date": [len, lambda x: x.nunique()]})
-    df_counts = df_counts.set_axis(["channels", "totalMessages", "days"], axis=1)
-    df_counts = df_counts.eval("messagesPerDay = totalMessages / days")
-    df_counts.reset_index(inplace=True)
+    df_summary = df_summary.set_axis(["channels", "totalMessages", "days"],
+                                     axis=1)
+    df_summary = df_summary.eval("messagesPerDay = totalMessages / days")
+    df_summary.reset_index(inplace=True)
 
     df_v3 = df.query("version == 'v3'")
-    df_ms = df_v3.reindex(columns=["relayChain", "origin", "destination"])
-    df_ms = df_ms.value_counts().reset_index()
-    df_ms = df_ms.eval("channel = origin.str.cat(destination, ' -> ')")
+    df_in = df_v3.groupby("destination").agg({"origin": len})
+    df_out = df_v3.groupby("origin").agg({"destination": len})
+    df_dist = df_in.join(df_out, how="outer").fillna(0)
+    df_dist = df_dist.eval(
+        """messageCount = origin + destination
+        messagePercent = messageCount / messageCount.sum()
+        """)
+    df_dist = df_dist.reindex(columns=["messageCount", "messagePercent"])
+    df_dist = df_dist.sort_values("messageCount", ascending=False)
+    df_dist.reset_index(names="chain", inplace=True)
 
-    total_ms_counts = df_ms.groupby("relayChain")["count"].sum()
-    df_ms = df_ms.merge(total_ms_counts, on="relayChain")
-    df_ms = df_ms.eval("messagePercent = count_x / count_y")
-    df_ms = df_ms.rename(columns={"count_x": "messageCount"})
-    df_ms = df_ms.reindex(columns=["relayChain", "channel", "messageCount",
-                                   "messagePercent"])
-    df_ms = df_ms.sort_values(["relayChain", "messageCount"], ascending=False)
-
-    dfs = {"summary": df_counts, "message_stats": df_ms}
+    dfs = {"summary": df_summary, "distribution": df_dist}
 
     return dfs
 

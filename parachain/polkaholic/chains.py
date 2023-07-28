@@ -9,6 +9,8 @@ def get_data():
     df = df.query("relayChain in ['polkadot', 'kusama']").copy()
     df["relayChain"] = df["relayChain"].str.title()
     df["chainName"] = df["chainName"].str.title()
+    df = df.replace(["Statemint", "Statemine"],
+                    ['AssetHub-Polkadot', 'AssetHub-Kusama'])
     df = df.reindex(columns=["chainID", "chainName"])
 
     return df

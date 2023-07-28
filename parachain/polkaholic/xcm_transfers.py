@@ -5,13 +5,10 @@ from parachain.sources.polkaholic import (PolkaholicExtractor,
 from string import Template
 
 
-def get_data(start=QuarterlyReport().start_time,
-             end=QuarterlyReport().end_time):
+def get_raw_data(path):
     """Retrieve data on XCM transfers from Polkaholic's dataset on Google Big
-    Query and return a dataframe.
+    Query, save the dataset to a csv file, and return a dataframe.
     """
-    df_chains = chains.get_data()
-
     query = Template(
         """
         WITH polkadot_xcm AS (
@@ -21,9 +18,11 @@ def get_data(start=QuarterlyReport().start_time,
             origination_para_id origin,
             destination_para_id destination,
           FROM `substrate-etl.crypto_polkadot.xcmtransfers`
-          WHERE origination_ts >= "$start"
+          WHERE destination_execution_status = "success"
           AND origination_ts < "$end"
-          AND destination_execution_status = "success"
+          AND origination_para_id != 0
+          AND destination_para_id != 0
+          ORDER BY 2 DESC
         ), kusama_xcm AS (
           SELECT
             'Kusama' as relayChain,
@@ -37,9 +36,10 @@ def get_data(start=QuarterlyReport().start_time,
               ELSE destination_para_id + 2e4
             END destination,
           FROM `substrate-etl.crypto_kusama.xcmtransfers`
-          WHERE origination_ts >= "$start"
+          WHERE destination_execution_status = "success"
           AND origination_ts < "$end"
-          AND destination_execution_status = "success"
+          AND origination_para_id != 0
+          AND destination_para_id != 0
           ORDER BY 2 DESC
         )
         SELECT *
@@ -49,42 +49,64 @@ def get_data(start=QuarterlyReport().start_time,
         FROM kusama_xcm
         ORDER BY 2 DESC
         """)
-    data = PolkaholicExtractor().extract(query, start=start, end=end)
+    data = PolkaholicExtractor().extract(query)
     df = PolkaholicTransformer(data).to_frame()
+    df.to_csv(path, index=False)
+
+    return df
+
+
+def get_data(path="data_raw/xcm_transfers_raw.csv"):
+    df_chains = chains.get_data()
+
+    # path = getcwd() + path
+    try:
+        df = pd.read_csv(path)
+    except FileNotFoundError:
+        df = get_raw_data(path)
 
     df = df.merge(df_chains, "left", left_on="origin", right_on="chainID")
     df = df.merge(df_chains, "left", left_on="destination", right_on="chainID")
-    df = df.reindex(columns=["relayChain", "chainName_x", "chainName_y"])
-    df = df.set_axis(["relayChain", "origin", "destination"], axis=1)
 
-    df_in = df.groupby("destination").agg(
-        {"origin": [len, lambda x: x.nunique()]})
-    df_out = df.groupby("origin").agg(
-        {"destination": [len, lambda x: x.nunique()]})
-    df_activities = df_in.join(df_out, how="outer").fillna(0)
-    df_activities = df_activities.set_axis(
-        ["transfersIn", "uniqueOrigins", "transfersOut", "uniqueDestinations"],
-        axis=1)
-    df_activities = df_activities.eval(
-        "channels = uniqueOrigins + uniqueDestinations")
-    df_activities = df_activities.reindex(columns=["transfersIn",
-                                                   "transfersOut", "channels"])
-    df_activities = df_activities.sort_values(df_activities.columns.tolist(),
-                                              ascending=False)
-    df_activities.reset_index(names="chain", inplace=True)
+    df["quarter"] = pd.to_datetime(df["timestamp"]).dt.quarter
+    df["period"] = df.apply(
+        lambda row: f"Q{row['quarter']}_2023"
+        if row["timestamp"] >= "2023-01-01" else "pre2023", axis=1)
+    df = df.reindex(columns=["period", "relayChain", "chainName_x",
+                             "chainName_y"])
+    df = df.rename(columns={"chainName_x": "origin",
+                            "chainName_y": "destination"})
 
-    df_channels = df.reindex(columns=["relayChain", "origin", "destination"])
-    df_counts = df_channels.eval("channel = origin + destination")
-    df_counts = df_counts.groupby("relayChain").agg(
-        {"channel": lambda x: x.nunique()})
+    df_in = df.groupby(["destination", "period"]).agg({"origin": len})
+    df_in = df_in.unstack().droplevel(0, axis=1)
+    df_out = df.groupby(["origin", "period"]).agg({"destination": len})
+    df_out = df_out.unstack().droplevel(0, axis=1)
+    df_transfers = df_in.join(df_out, how="outer", lsuffix="_in",
+                              rsuffix="_out")
+    df_transfers = df_transfers.fillna(0).eval(
+        """pre2023 = pre2023_in + pre2023_out
+        Q1_2023 = Q1_2023_in + Q1_2023_out
+        Q2_2023 = Q2_2023_in + Q2_2023_out
+        total = pre2023 + Q1_2023 + Q2_2023
+        """)
+    df_transfers = df_transfers.reindex(columns=["pre2023", "Q1_2023",
+                                                 "Q2_2023", "total"])
+    df_transfers = df_transfers.sort_values("total", ascending=False)
+    df_transfers.reset_index(names="chain", inplace=True)
 
-    df_channels = df_channels.value_counts().reset_index()
-    df_channels = df_channels.rename(columns={"count": "transfers"})
-    df_channels = df_channels.sort_values(["relayChain", "transfers"],
-                                          ascending=False)
+    df_channels = df.dropna().copy()
+    df_channels = df_channels.eval(
+        "channel = origin.str.cat(destination, ' -> ')")
+    df_channels = df_channels.groupby(["channel", "period"]).agg(
+        {"relayChain": len})
+    df_channels = df_channels.unstack(fill_value=0).droplevel(0, axis=1)
+    df_channels = df_channels.eval("total = pre2023 + Q1_2023 + Q2_2023")
+    df_channels = df_channels.reindex(columns=["pre2023", "Q1_2023", "Q2_2023",
+                                               "total"])
+    df_channels = df_channels.sort_values("total", ascending=False)
+    df_channels.reset_index(names="channel", inplace=True)
 
-    dfs = {"activities": df_activities, "counts": df_counts,
-           "channels": df_channels}
+    dfs = {"transfers": df_transfers, "channels": df_channels}
 
     return dfs
 
