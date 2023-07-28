@@ -1,7 +1,7 @@
 import pandas as pd
 from reports.quarterly_etl import QuarterlyReport
 from parachain.sources.subscan import SubscanNetworks, SubscanExtractor
-from parachain.coingecko import prices
+from nft.coingecko import prices
 
 
 def get_data(chains=None, start=QuarterlyReport().start_time,

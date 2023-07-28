@@ -1,7 +1,7 @@
 import pandas as pd
 from reports.quarterly_etl import QuarterlyReport
 from nft.sources.nftrade import NftradeExtractor, NftradeTransformer
-from parachain.coingecko import prices
+from nft.coingecko import prices
 
 
 def get_data(start=QuarterlyReport().start_time,
