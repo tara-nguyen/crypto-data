@@ -18,7 +18,7 @@ def get_data(chains=None, start=QuarterlyReport().start_time,
     if isinstance(chains, list):
         chains = {chain: all_chains[chain] for chain in chains}
 
-    path = re.match(".+quarterlyReport", getcwd()).group()
+    path = re.match(".+crypto-data", getcwd()).group()
     path += "/nft/coingecko/prices_raw.csv"
     coins = CoingeckoCoins().coins_dict
     coin_ids = {coins[chain] for chain in chains if chain in coins}

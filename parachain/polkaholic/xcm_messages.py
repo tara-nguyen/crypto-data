@@ -1,6 +1,6 @@
 import pandas as pd
-import chains
 from parachain.sources.polkaholic import *
+from parachain.polkaholic import chains
 from string import Template
 
 
