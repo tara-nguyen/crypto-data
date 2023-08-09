@@ -29,7 +29,6 @@ def get_data(category, network=None):
 
     df = df.merge(df_protocols).rename(columns={"totalLiquidityUSD": "tvl"})
     df = df.eval("name = name.str.cat(chain, ' - ')")
-    df = df.reindex(columns=["date", "name", "tvl"])
     df = df.pivot(index="date", columns="name", values="tvl")
     if category == "Dexes":
         if network == "polkadot":
@@ -56,29 +55,30 @@ def get_data(category, network=None):
                               "Parallel Liquid Crowdloan - Heiko",
                               "Parallel Liquid Crowdloan - Parallel"])
 
-    df_chains_sorted = df.tail(1).sort_values(df.index[-1], axis=1,
-                                              ascending=False)
-    chains_sorted = df_chains_sorted.columns.tolist()
+    df = df.sort_values(df.index[-1], axis=1, ascending=False)
+    chains_sorted = df.tail(1).columns.tolist()
 
     max_chain_count = 10
     if len(chains_sorted) > max_chain_count:
         df["Others"] = df.iloc[:, max_chain_count:].sum(axis=1)
-        chains_sorted = chains_sorted[:max_chain_count] + ["Others"]
-    df = df.reindex(columns=chains_sorted).interpolate().fillna(0)
+    df = df.drop(columns=chains_sorted[max_chain_count:])
+    df = df.interpolate().fillna(0)
     df = df.sort_index(ascending=False).reset_index()
 
     return df
 
 
 if __name__ == "__main__":
-    # for network in ["polkadot", "kusama"]:
-    #     dexes = get_data("Dexes", network)
-    #     print()
-    #     print(network.title())
-    #     print(dexes.to_string())
+    for network in ["polkadot", "kusama"]:
+        dexes = get_data("Dexes", network)
+        print()
+        print(network.title())
+        print(dexes.to_string())
 
     lending = get_data("Lending")
+    print()
     print(lending.to_string())
 
     lqs = get_data("Liquid Staking")
+    print()
     print(lqs.to_string())

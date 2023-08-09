@@ -18,7 +18,6 @@ class ElectricCapitalExtractor:
 class ElectricCapitalTransformer:
     def __init__(self, data):
         self.data = data
-        self.timestamp_format = "%Y-%m-%d"
 
     def to_frame(self, start=QuarterlyReport().start_time,
                  end=QuarterlyReport().end_time, new_cols=None):
@@ -32,8 +31,8 @@ class ElectricCapitalTransformer:
         df = reduce(lambda l, r: l.merge(r, on="timestamp"), dfs)
 
         df = df.query("@start <= timestamp <= @end").copy()
-        df["date"] = pd.to_datetime(df["timestamp"], unit="ms")
-        df["date"] = df["date"].dt.strftime(self.timestamp_format)
+        df["date"] = pd.to_datetime(df["timestamp"],
+                                    unit="ms").dt.strftime("%Y-%m-%d")
         df = df.reindex(columns=["date"] + df.columns[1:-1].tolist())
         if new_cols is not None:
             df = df.set_axis(["date"] + new_cols, axis=1)

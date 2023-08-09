@@ -1,14 +1,12 @@
 import pandas as pd
-from reports.quarterly_etl import QuarterlyReport
-from devActivity.sources.tokenterminal import (TokenTerminalExtractor,
-                                               TokenTerminalTransformer)
+from devActivity.sources.tokenterminal import *
 
 
 def get_data():
     data = TokenTerminalExtractor("code_commits").extract()
 
     trf = TokenTerminalTransformer(data)
-    start = QuarterlyReport().start_time - pd.Timedelta(days=29)
+    start = trf.start - pd.Timedelta(days=29)
     df = trf.to_frame(start=start).sort_values("date")
     df = df.rolling(30, on="date").mean().dropna()
     df = df.rename(columns={"value": "codeCommits30dayAverage"})

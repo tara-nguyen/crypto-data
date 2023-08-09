@@ -1,5 +1,4 @@
-from devActivity.sources.santiment import (SantimentExtractor,
-                                           SantimentTransformer)
+from devActivity.sources.santiment import *
 
 
 def get_data(slug):

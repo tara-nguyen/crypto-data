@@ -1,5 +1,4 @@
-from devActivity.sources.tokenterminal import (TokenTerminalExtractor,
-                                               TokenTerminalTransformer)
+from devActivity.sources.tokenterminal import *
 
 
 def get_data():

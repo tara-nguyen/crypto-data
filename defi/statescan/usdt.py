@@ -3,21 +3,21 @@ from reports.quarterly_etl import QuarterlyReport, to_epoch
 from defi.sources.statescan import StatescanExtractor
 
 
-def get_metadata(network):
-    data = StatescanExtractor(network).extract()
+def get_metadata(chain):
+    data = StatescanExtractor(chain).extract()
     start_block = data["assetHeight"]
     decimals = data["metadata"]["decimals"]
 
     return start_block, decimals
 
 
-def get_data(network, start=QuarterlyReport().start_time,
+def get_data(chain, start=QuarterlyReport().start_time,
              end=QuarterlyReport().end_time):
     start, end = [to_epoch(t) for t in [start, end]]
-    start_block, decimals = get_metadata(network)
+    start_block, decimals = get_metadata(chain)
     url_ending = "_" + str(start_block) + "/statistic"
 
-    data = StatescanExtractor(network, url_ending=url_ending).extract(
+    data = StatescanExtractor(chain, url_ending=url_ending).extract(
         params={"from": start, "to": end})
     df = pd.json_normalize(data, sep="_")
     df["date"] = pd.to_datetime(df["indexer_blockTime"],

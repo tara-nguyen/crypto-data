@@ -8,7 +8,6 @@ class SantimentExtractor:
         self.method = "POST"
         self.url = "https://api.santiment.net/graphql"
         self.headers = {"Content-Type": "application/json"}
-        self.timestamp_format = "%Y-%m-%dT%H:%M:%SZ"
         self.template = Template(
             '{"query": "{getMetric(metric: \\"$metric\\") {timeseriesData('
             'slug: \\"$slug\\" from: \\"$start\\" to: \\"$end\\" transform: '
@@ -18,7 +17,7 @@ class SantimentExtractor:
     def extract(self, metric, slug="polkadot-new",
                 start=QuarterlyReport().start_time,
                 end=QuarterlyReport().end_time, moving_ave_base=1):
-        start, end = [t.strftime(self.timestamp_format) for t in [start, end]]
+        start, end = [t.strftime("%Y-%m-%dT%H:%M:%SZ") for t in [start, end]]
         payload = self.template.substitute(
             metric=metric, slug=slug, start=start, end=end,
             moving_ave_base=moving_ave_base)

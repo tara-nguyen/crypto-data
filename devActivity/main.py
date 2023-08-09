@@ -9,18 +9,15 @@ def main():
         prices.get_data("kusama"), on="date")
     df_prices = df_prices.set_axis(["date", "priceDOT", "priceKSM"], axis=1)
     df_prices_v_activity = df_prices.merge(da.get_data())
-    print()
     print("Token Prices Vs. Development Activity")
     print_long_df(df_prices_v_activity)
 
     df_dev_v_commits = ad.get_data().merge(cc.get_data(), on="date")
-    print()
-    print("Active Developers Vs. Code Commits")
+    print("\nActive Developers Vs. Code Commits")
     print_long_df(df_dev_v_commits)
 
     df_developers = dev.get_data()
-    print()
-    print("Developer Distribution")
+    print("\nDeveloper Distribution")
     print_long_df(df_developers)
 
 
