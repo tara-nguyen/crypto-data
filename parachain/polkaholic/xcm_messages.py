@@ -55,7 +55,7 @@ def get_raw_data(path):
     return df
 
 
-def get_data(path="xcm_messages_raw.csv"):
+def get_data(path="data_raw/xcm_messages_raw.csv"):
     df_chains = chains.get_data()
 
     try:

@@ -21,12 +21,13 @@ class TokenTerminalExtractor:
 class TokenTerminalTransformer:
     def __init__(self, data):
         self.data = data
-        self.timestamp_format = "%Y-%m-%d"
+        self.start = pd.Timestamp(2023, 1, 1)
 
-    def to_frame(self, start=QuarterlyReport().start_time,
-                 end=QuarterlyReport().end_time):
+    def to_frame(self, start=None, end=QuarterlyReport().end_time):
         """Convert json-encoded content to a dataframe."""
-        start, end = [t.strftime(self.timestamp_format) for t in [start, end]]
+        if start is None:
+            start = self.start
+        start, end = [t.strftime("%Y-%m-%d") for t in [start, end]]
         df = pd.DataFrame(self.data).query("@start <= timestamp <= @end")
         df["date"] = df["timestamp"].str.slice(stop=10)
         df = df.reindex(columns=["date", "value"])

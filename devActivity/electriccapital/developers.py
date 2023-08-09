@@ -1,6 +1,5 @@
 import pandas as pd
-from devActivity.sources.electriccapital import (ElectricCapitalExtractor,
-                                                 ElectricCapitalTransformer)
+from devActivity.sources.electriccapital import *
 
 
 def get_data(start=pd.Timestamp(2023, 1, 1)):

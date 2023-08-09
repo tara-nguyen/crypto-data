@@ -58,7 +58,6 @@ def get_raw_data(path):
 def get_data(path="data_raw/xcm_transfers_raw.csv"):
     df_chains = chains.get_data()
 
-    # path = getcwd() + path
     try:
         df = pd.read_csv(path)
     except FileNotFoundError:

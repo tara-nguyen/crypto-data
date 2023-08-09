@@ -10,7 +10,7 @@ def get_data():
     df["relayChain"] = df["relayChain"].str.title()
     df["chainName"] = df["chainName"].str.title()
     df = df.replace(["Statemint", "Statemine"],
-                    ['AssetHub-Polkadot', 'AssetHub-Kusama'])
+                    ["AssetHub-Polkadot", "AssetHub-Kusama"])
     df = df.reindex(columns=["chainID", "chainName"])
 
     return df
