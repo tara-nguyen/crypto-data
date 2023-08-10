@@ -4,7 +4,7 @@ from staking_quarterlyReport.sources.subscan import SubscanExtractor
 
 def get_data():
     """Retrieve pool names and pool IDs from Subscan and return a dataframe."""
-    data = SubscanExtractor("/nomination_pool/pools").extract({})
+    data = SubscanExtractor("/nomination_pool/pools").extract({})["list"]
     df = pd.json_normalize(data)
 
     df = df.reindex(columns=[

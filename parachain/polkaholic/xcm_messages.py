@@ -48,7 +48,7 @@ def get_raw_data(path):
         FROM kusama_xcm
         ORDER BY 2 DESC
         """)
-    data = PolkaholicExtractor().extract(query, end=pd.Timestamp(2023, 7, 21))
+    data = PolkaholicExtractor().extract(query, end=pd.Timestamp(2023, 7, 30))
     df = PolkaholicTransformer(data).to_frame()
     df.to_csv(path, index=False)
 

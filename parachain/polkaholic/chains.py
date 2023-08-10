@@ -1,16 +1,17 @@
-from parachain.sources.polkaholic import (PolkaholicExtractor,
-                                          PolkaholicTransformer)
+from reports.quarterly_etl import QuarterlyReport
+from parachain.sources.polkaholic import *
 
 
 def get_data():
     data = PolkaholicExtractor(from_bigquery=False, route="/chains").extract({})
     df = PolkaholicTransformer(data).to_frame()
 
-    df = df.query("relayChain in ['polkadot', 'kusama']").copy()
+    relay_chains = QuarterlyReport().networks
+    df = df.query("relayChain in @relay_chains").copy()
     df["relayChain"] = df["relayChain"].str.title()
     df["chainName"] = df["chainName"].str.title()
     df = df.replace(["Statemint", "Statemine"],
-                    ["AssetHub-Polkadot", "AssetHub-Kusama"])
+                    ["Asset Hub-Polkadot", "Asset Hub-Kusama"])
     df = df.reindex(columns=["chainID", "chainName"])
 
     return df

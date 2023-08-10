@@ -5,3 +5,4 @@ __pycache__
 authorization.py
 credentials-sheets.json
 *.pickle
+*.csv

@@ -1,3 +1,4 @@
+import pandas as pd
 from reports.quarterly_etl import QuarterlyReport, to_epoch
 from nft.sources.coingecko import *
 

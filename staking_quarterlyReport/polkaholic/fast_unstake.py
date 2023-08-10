@@ -1,12 +1,11 @@
 import pandas as pd
-from staking_quarterlyReport.sources.polkaholic import (PolkaholicExtractor,
-                                                        PolkaholicTransformer)
+from staking_quarterlyReport.sources.polkaholic import *
 from string import Template
 
 
-def get_data():
-    """Retrieve fast-unstake data from Polkaholic's dataset on Google Big Query
-    and return a dataframe.
+def get_raw_data(path):
+    """Retrieve fast-unstake data from Polkaholic's Big Query dataset, save the
+    dataset to a csv file, and return a dataframe.
     """
     query = Template("""
     WITH fast_unstake AS (
@@ -25,7 +24,7 @@ def get_data():
     )
     SELECT
       date,
-      COUNT(DISTINCT(staker)) numAccounts,
+      COUNT(DISTINCT(staker)) uniqueUsers,
       SUM(amount) amount
     FROM fast_unstake
     GROUP BY date
@@ -33,9 +32,21 @@ def get_data():
     """)
     data = PolkaholicExtractor().extract(query)
     df = PolkaholicTransformer(data).to_frame()
-    df["date"] = pd.to_datetime(df["date"])
+    df.to_csv(path, index=False)
+
+    return df
+
+
+def get_data(path="data_raw/fast_unstake_raw.csv"):
+    try:
+        df = pd.read_csv(path)
+    except FileNotFoundError:
+        df = get_raw_data(path)
+
+    df = df.eval("amountPerUser = amount / uniqueUsers")
 
     # Make all dates appear in the dataframe and fill missing values with zeros
+    df["date"] = pd.to_datetime(df["date"])
     index = pd.date_range(df["date"].max(), df["date"].min(), freq="-1D",
                           name="date")
     df = df.set_index("date").reindex(index=index, fill_value=0).reset_index()

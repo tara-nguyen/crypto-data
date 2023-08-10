@@ -7,7 +7,6 @@ class SubsquidExtractor:
         self.method = "POST"
         self.url = "https://squid.subsquid.io/polkadot-explorer/graphql"
         self.headers = {"Content-Type": "application/json"}
-        self.timestamp_format = "%Y-%m-%dT%H:%M:%S.%fZ"
 
     def extract(self, template, metric, end=QuarterlyReport().end_time):
         """Extract data from Subsquid.
@@ -17,7 +16,7 @@ class SubsquidExtractor:
             end -- end point of the time range of interest
         """
         start = (end - pd.Timedelta(days=1))
-        start, end = [t.strftime(self.timestamp_format) for t in [start, end]]
+        start, end = [t.strftime("%Y-%m-%dT%H:%M:%S.%fZ") for t in [start, end]]
         payload = template.substitute(metric=metric, start=start, end=end)
         data = extract(self.method, self.url, headers=self.headers,
                        data=payload)["data"][metric]

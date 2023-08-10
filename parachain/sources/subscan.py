@@ -1,24 +1,28 @@
-from reports.quarterly_etl import extract
+from reports.quarterly_etl import QuarterlyReport, extract
 from time import sleep
 
 
 class SubscanExtractor:
-    def __init__(self, route, api_version=1, network="Polkadot", chain=None):
+    def __init__(self, route, api_version=1, network="polkadot", chain=None):
         self.method = "POST"
 
-        if network in ["Polkadot", "Kusama"]:
+        networks = list(QuarterlyReport().networks.keys())
+        network = network.lower()
+        if network in networks:
             if chain is None:
-                chain = network
-        else:
-            raise Exception('network must be either "Polkadot" or "Kusama" '
-                            '(case-sensitive)')
-        chains = SubscanChains().get_parachains(network)
-        if chain in chains:
-            self.url = f"https://{chains[chain][0]}.api.subscan.io/api/"
+                self.url = f"https://{network}.api.subscan.io/api/"
+            else:
+                chains = SubscanChains().get_parachains(network)
+                if chain in chains:
+                    self.url = f"https://{chains[chain][0]}.api.subscan.io/api/"
+                else:
+                    raise Exception(f"{chain} is not a parachain of {network}. "
+                                    + "Chain name is case-sensitive.")
             self.url += "scan" if api_version == 1 else "v2/scan"
             self.url += route
         else:
-            raise Exception(f"{chain} is not a parachain of {network}")
+            raise Exception(
+                f'network must be either "{networks[0]}" or "{networks[1]}"')
 
     def extract(self, payload):
         """Extract data from Subscan."""
@@ -28,10 +32,7 @@ class SubscanExtractor:
             except KeyError:
                 sleep(0.1)
             else:
-                data = data["list"]
-                break
-
-        return data
+                return data
 
 
 class SubscanChains:

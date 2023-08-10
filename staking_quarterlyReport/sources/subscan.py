@@ -17,7 +17,4 @@ class SubscanExtractor:
             except KeyError:
                 sleep(0.1)
             else:
-                data = data["list"]
-                break
-
-        return data
+                return data

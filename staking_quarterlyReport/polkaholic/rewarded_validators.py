@@ -1,11 +1,11 @@
-from staking_quarterlyReport.sources.polkaholic import (PolkaholicExtractor,
-                                                        PolkaholicTransformer)
+import pandas as pd
+from staking_quarterlyReport.sources.polkaholic import *
 from string import Template
 
 
-def get_data():
-    """Retrieve data on staking payouts from Polkaholic's dataset on Google Big
-    Query and return a list of rewarded validators.
+def get_raw_data(path):
+    """Retrieve data on staking payouts from Polkaholic's Big Query dataset,
+    save the dataset to a csv file, and return a dataframe.
     """
     query = Template("""
     SELECT 
@@ -21,7 +21,19 @@ def get_data():
       AND ev.method = "PayoutStarted"
     """)
     data = PolkaholicExtractor().extract(query)
-    validators = PolkaholicTransformer(data).to_frame()["validator"].unique()
+    df = PolkaholicTransformer(data).to_frame()
+    df.to_csv(path, index=False)
+
+    return df
+
+
+def get_data(path="data_raw/rewarded_validators_raw.csv"):
+    try:
+        df = pd.read_csv(path)
+    except FileNotFoundError:
+        df = get_raw_data(path)
+
+    validators = df["validator"].unique()
 
     return validators
 
