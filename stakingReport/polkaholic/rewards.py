@@ -1,7 +1,7 @@
-import staking_stakingReport.polkaholic.rewarded_validators as rv
-import staking_stakingReport.subscan.pools as p
+import stakingReport.polkaholic.rewarded_validators as rv
+import stakingReport.subscan.pools as p
 import pandas as pd
-from staking_stakingReport.sources.polkaholic import PolkaholicExtractor
+from stakingReport.sources.polkaholic import PolkaholicExtractor
 from string import Template
 from time import perf_counter_ns
 

@@ -1,6 +1,6 @@
 from reports.staking_etl import StakingReport, get_time
-from staking_stakingReport.sources.subsquid import (SubsquidExtractor,
-                                                    SubsquidTransformer)
+from stakingReport.sources.subsquid import (SubsquidExtractor,
+                                            SubsquidTransformer)
 from string import Template
 
 

@@ -1,5 +1,5 @@
 import pandas as pd
-from staking_stakingReport.sources.subscan import SubscanExtractor
+from stakingReport.sources.subscan import SubscanExtractor
 
 
 def get_data():

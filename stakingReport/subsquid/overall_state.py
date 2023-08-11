@@ -1,5 +1,5 @@
-import staking_stakingReport.subsquid.stake_inflation as si
-from staking_stakingReport.subsquid import supply
+import stakingReport.subsquid.stake_inflation as si
+from stakingReport.subsquid import supply
 from concurrent.futures import ThreadPoolExecutor
 
 
