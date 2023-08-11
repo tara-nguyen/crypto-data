@@ -3,6 +3,9 @@ from reports.quarterly_etl import QuarterlyReport, to_epoch, extract
 
 
 class MoonbeansExtractor:
+    """Extract data from Moonbeams, via either graphql or directly from an API.
+    """
+
     def __init__(self, graphql):
         if graphql:
             self.method = "POST"
@@ -17,8 +20,8 @@ class MoonbeansExtractor:
         """Extract data from Moonbeans graphql.
 
         Keyword arguments:
-            start -- start point of the time range of interest
-            end -- end point of the time range of interest
+            start: start point of the time range of interest
+            end: end point of the time range of interest
         """
         start, end = [to_epoch(t) for t in [start, end]]
         payload = template.substitute(start=start, end=end)
@@ -37,11 +40,12 @@ class MoonbeansExtractor:
 
 
 class MoonbeansTransformer:
+    """Convert json-encoded content to a dataframe."""
+
     def __init__(self, data):
         self.data = data
 
     def to_frame(self):
-        """Convert json-encoded content to a dataframe."""
         df = pd.DataFrame(self.data)
 
         return df

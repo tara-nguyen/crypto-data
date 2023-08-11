@@ -3,6 +3,8 @@ from reports.quarterly_etl import extract
 
 
 class NftradeExtractor:
+    """Extract data from NFTrade API."""
+
     def __init__(self):
         self.method = "GET"
         self.url = "https://api.nftrade.com/api/v1/activities"
@@ -18,6 +20,8 @@ class NftradeExtractor:
 
 
 class NftradeTransformer:
+    """Convert json-encoded content to a dataframe."""
+
     def __init__(self, data):
         self.data = data
 

@@ -2,6 +2,8 @@ from reports.quarterly_etl import extract
 
 
 class StatescanExtractor:
+    """Extract data from Statescan API."""
+
     def __init__(self, network, asset_id=1984, url_ending=""):
         self.method = "GET"
         self.url = f"https://{network}-api.statescan.io/assets/{asset_id}"

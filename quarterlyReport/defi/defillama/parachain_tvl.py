@@ -1,6 +1,6 @@
 import pandas as pd
 from sources.defillama import (DefillamaExtractor, DefillamaTransformer,
-                               DefillamaParachains, filter_and_convert)
+                               DefillamaParachains)
 
 
 def get_data():
@@ -8,7 +8,6 @@ def get_data():
     for chain in DefillamaParachains().chains:
         data = DefillamaExtractor(f"/v2/historicalChainTvl/{chain}").extract()
         df_chain = DefillamaTransformer(data).to_frame()
-        df_chain = filter_and_convert(df_chain)
         df_chain["chain"] = chain
         df = pd.concat([df, df_chain])
 

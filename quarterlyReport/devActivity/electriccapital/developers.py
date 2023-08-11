@@ -6,7 +6,7 @@ from sources.electriccapital import (ElectricCapitalExtractor,
 def get_data(start=pd.Timestamp(2023, 1, 1)):
     data = ElectricCapitalExtractor().extract()
     df = ElectricCapitalTransformer(data).to_frame(
-        start=start, new_cols=["fulltime", "parttime", "onetime"])
+        ["fulltime", "parttime", "onetime"], start=start)
     df = df.eval("fulltimeRatio = fulltime / (fulltime + parttime + onetime)")
 
     return df

@@ -6,7 +6,7 @@ def get_data(category):
     chains = DefillamaParachains().chains
 
     data = DefillamaExtractor("/protocols").extract()
-    df = DefillamaTransformer(data).to_frame()
+    df = DefillamaTransformer(data, False).to_frame()
 
     df = df.explode("chains")
     if df["category"].eq(category).any():

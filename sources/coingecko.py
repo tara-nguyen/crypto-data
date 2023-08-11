@@ -4,12 +4,13 @@ from time import sleep
 
 
 class CoingeckoExtractor:
+    """Extract data from CoinGecko API."""
+
     def __init__(self, route):
         self.method = "GET"
         self.url = f"https://api.coingecko.com/api/v3/coins{route}"
 
     def extract(self, params):
-        """Extract data from CoinGecko."""
         while True:
             data = extract(self.method, self.url, params=params)
             if "status" in data:
@@ -21,11 +22,12 @@ class CoingeckoExtractor:
 
 
 class CoingeckoTransformer:
+    """Convert json-encoded content to a dataframe."""
+
     def __init__(self, data):
         self.data = data
 
     def to_frame(self, metric):
-        """Convert json-encoded content to a dataframe."""
         df = pd.DataFrame(self.data[metric])
         df = df.set_axis(["timestamp", metric], axis=1)
 
@@ -33,6 +35,8 @@ class CoingeckoTransformer:
 
 
 class CoingeckoCoins:
+    """Store the ids of coins available on CoinGecko."""
+
     def __init__(self):
         self.coins_dict = {
             "Polkadot": "polkadot",

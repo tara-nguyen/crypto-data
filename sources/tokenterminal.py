@@ -4,6 +4,8 @@ from sources.tokenterminal_authorization import bearer
 
 
 class TokenTerminalExtractor:
+    """Extract data from Token Terminal API."""
+
     def __init__(self, metric):
         self.method = "GET"
         self.url = f"https://api.tokenterminal.com/v2/internal/metrics/{metric}"
@@ -19,12 +21,18 @@ class TokenTerminalExtractor:
 
 
 class TokenTerminalTransformer:
+    """Convert json-encoded content to a dataframe."""
+
     def __init__(self, data):
         self.data = data
         self.start = pd.Timestamp(2023, 1, 1)
 
     def to_frame(self, start=None, end=QuarterlyReport().end_time):
-        """Convert json-encoded content to a dataframe."""
+        """
+        Keyword arguments:
+            start: start point of the time range of interest
+            end: end point of the time range of interest
+        """
         if start is None:
             start = self.start
         start, end = [t.strftime("%Y-%m-%d") for t in [start, end]]

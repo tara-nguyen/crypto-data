@@ -1,6 +1,6 @@
 import pandas as pd
 from sources.defillama import (DefillamaExtractor, DefillamaTransformer,
-                               DefillamaParachains, filter_and_convert)
+                               DefillamaParachains)
 from quarterlyReport.defi.defillama import protocol_list
 
 
@@ -24,7 +24,6 @@ def get_data(category, network=None):
 
         for chain in df_protocols.query("slug == @slug")["chain"]:
             df_chain = DefillamaTransformer(data[chain]["tvl"]).to_frame()
-            df_chain = filter_and_convert(df_chain)
             df_chain["chain"] = chain
             df_chain["slug"] = slug
             df = pd.concat([df, df_chain])
