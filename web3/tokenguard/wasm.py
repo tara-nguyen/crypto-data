@@ -1,5 +1,5 @@
 import pandas as pd
-from quarterly_etl import QuarterlyReport
+from reports.quarterly_etl import QuarterlyReport
 
 
 def get_data(network, file_path_prefix="", end=QuarterlyReport().end_time):
