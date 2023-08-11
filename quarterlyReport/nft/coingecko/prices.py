@@ -1,5 +1,7 @@
 import pandas as pd
 from reports.quarterly_etl import QuarterlyReport, to_epoch
+from sources.coingecko import (CoingeckoExtractor, CoingeckoTransformer,
+                               CoingeckoCoins)
 
 
 def get_raw_data(path, coin_ids, start, end):

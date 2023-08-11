@@ -8,7 +8,7 @@ class CoingeckoExtractor:
         self.method = "GET"
         self.url = f"https://api.coingecko.com/api/v3/coins{route}"
 
-    def extract(self, params=""):
+    def extract(self, params):
         """Extract data from CoinGecko."""
         while True:
             data = extract(self.method, self.url, params=params)
@@ -36,7 +36,7 @@ class CoingeckoCoins:
     def __init__(self):
         self.coins_dict = {
             "Polkadot": "polkadot",
-            "AssetHub-Polkadot": "polkadot",
+            "Asset Hub-Polkadot": "polkadot",
             "Acala": "acala",
             "Astar": "astar",
             "Bifrost": "bifrost-native-coin",
@@ -56,7 +56,7 @@ class CoingeckoCoins:
             "Unique": "unique-network",
             "Zeitgeist": "zeitgeist",
             "Kusama": "kusama",
-            "AssetHub-Kusama": "kusama",
+            "Asset Hub-Kusama": "kusama",
             "Altair": "altair",
             "Bajun": "ajuna-network",
             "Basilisk": "basilisk",

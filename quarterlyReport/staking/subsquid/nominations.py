@@ -1,3 +1,4 @@
+from sources.subsquid import SubsquidExtractor, SubsquidTransformer
 from string import Template
 
 

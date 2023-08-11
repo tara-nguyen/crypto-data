@@ -1,10 +1,11 @@
 import pandas as pd
+from sources.polkaholic import PolkaholicExtractor, PolkaholicTransformer
 from quarterlyReport.staking.polkaholic import rewarded_validators as rv
 from quarterlyReport.staking.subscan import pools
 from string import Template
 
 
-def get_raw_data(path):
+def get_raw_data(file_path):
     """Retrieve data on staking rewards from Polkaholic's Big Query dataset,
     save the dataset to a csv file, and return a dataframe.
     """
@@ -25,20 +26,23 @@ def get_raw_data(path):
     """)
     data = PolkaholicExtractor().extract(query)
     df = PolkaholicTransformer(data).to_frame()
-    df.to_csv(path, index=False)
+    df.to_csv(file_path, index=False)
 
     return df
 
 
-def get_data(rewards_path="data_raw/rewards_raw.csv",
-             validators_path="data_raw/rewarded_validators_raw.csv"):
+def get_data(file_path_prefix="data_raw/"):
+    """Retrieve data on staking rewards, either directly from Polkaholic's Big
+    Query dataset or from a local csv file, and return a dataframe.
+    """
+    file_path = file_path_prefix + "rewards_raw.csv"
     try:
-        df = pd.read_csv(rewards_path)
+        df = pd.read_csv(file_path)
     except FileNotFoundError:
-        df = get_raw_data(rewards_path)
+        df = get_raw_data(file_path)
 
     # Nominator rewards
-    validators = rv.get_data(validators_path)
+    validators = rv.get_data(file_path_prefix)
     df_nom = df.query("staker not in @validators").drop(columns="staker")
     df_nom = df_nom.groupby("date").sum().reset_index()
 

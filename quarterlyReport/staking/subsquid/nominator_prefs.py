@@ -1,6 +1,6 @@
 import pandas as pd
-from quarterlyReport.staking.subsquid import (nominations as nom,
-                                              validator_stake as vs)
+from quarterlyReport.staking.subsquid import nominations as nom
+from quarterlyReport.staking.subsquid import validator_stake as vs
 
 
 def get_data(path="validator_commission.csv"):

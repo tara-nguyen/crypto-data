@@ -1,4 +1,6 @@
-from quarterlyReport.defi.sources.defillama import *
+import pandas as pd
+from sources.defillama import (DefillamaExtractor, DefillamaTransformer,
+                               DefillamaParachains, filter_and_convert)
 
 
 def get_data():
@@ -10,12 +12,8 @@ def get_data():
         df_chain["chain"] = chain
         df = pd.concat([df, df_chain])
 
-    df_chains_sorted = df.groupby("chain").tail(1)
-    df_chains_sorted = df_chains_sorted.sort_values("tvl", ascending=False)
-    chains_sorted = df_chains_sorted["chain"].unique()
-
-    df = df.pivot(index="date", columns="chain", values="tvl")
-    df = df.fillna(0).reindex(columns=chains_sorted)
+    df = df.pivot(index="date", columns="chain", values="tvl").fillna(0)
+    df = df.sort_values(df.index[-1], axis=1, ascending=False)
     df = df.sort_index(ascending=False).reset_index()
 
     return df
@@ -23,4 +21,4 @@ def get_data():
 
 if __name__ == "__main__":
     tvl = get_data()
-    print(tvl)
+    print(tvl.to_string())

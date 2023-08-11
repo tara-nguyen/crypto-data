@@ -1,4 +1,4 @@
-from quarterlyReport.nft.sources.moonbeans import MoonbeansExtractor, MoonbeansTransformer
+from sources.moonbeans import MoonbeansExtractor, MoonbeansTransformer
 
 
 def get_data():

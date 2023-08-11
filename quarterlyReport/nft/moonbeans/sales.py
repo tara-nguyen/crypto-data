@@ -1,6 +1,6 @@
 import pandas as pd
 from reports.quarterly_etl import QuarterlyReport
-from quarterlyReport.nft.sources.moonbeans import MoonbeansExtractor, MoonbeansTransformer
+from sources.moonbeans import MoonbeansExtractor, MoonbeansTransformer
 from quarterlyReport.nft.moonbeans import collections
 from quarterlyReport.nft.coingecko import prices
 from string import Template

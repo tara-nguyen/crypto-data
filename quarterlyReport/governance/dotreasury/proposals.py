@@ -1,3 +1,6 @@
+from sources.opensquare import OpensquareExtractor, OpensquareTransformer
+
+
 def get_data(network):
     fields = ["proposalIndex", "value", "fiatValue"]
     data = OpensquareExtractor("dotreasury", network, "/proposals").extract()

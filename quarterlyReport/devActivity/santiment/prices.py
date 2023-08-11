@@ -1,4 +1,4 @@
-from quarterlyReport.devActivity.sources.santiment import *
+from sources.santiment import SantimentExtractor, SantimentTransformer
 
 
 def get_data(slug):

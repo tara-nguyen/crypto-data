@@ -1,6 +1,6 @@
 import pandas as pd
-from quarterlyReport.nft.coingecko import prices
 from reports.quarterly_etl import QuarterlyReport
+from quarterlyReport.nft.coingecko import prices
 
 
 def get_data(price_file_path="../coingecko/prices_raw.csv",

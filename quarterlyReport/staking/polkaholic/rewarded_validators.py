@@ -1,8 +1,9 @@
 import pandas as pd
+from sources.polkaholic import PolkaholicExtractor, PolkaholicTransformer
 from string import Template
 
 
-def get_raw_data(path):
+def get_raw_data(file_path):
     """Retrieve data on staking payouts from Polkaholic's Big Query dataset,
     save the dataset to a csv file, and return a dataframe.
     """
@@ -21,16 +22,21 @@ def get_raw_data(path):
     """)
     data = PolkaholicExtractor().extract(query)
     df = PolkaholicTransformer(data).to_frame()
-    df.to_csv(path, index=False)
+    df.to_csv(file_path, index=False)
 
     return df
 
 
-def get_data(path="data_raw/rewarded_validators_raw.csv"):
+def get_data(file_path_preifx="data_raw/"):
+    """Retrieve data on staking payouts, either directly from Polkaholic's Big
+    Query dataset or from a local csv file, and return a list of rewarded
+    validators.
+    """
+    file_path = file_path_preifx + "rewarded_validators_raw.csv"
     try:
-        df = pd.read_csv(path)
+        df = pd.read_csv(file_path)
     except FileNotFoundError:
-        df = get_raw_data(path)
+        df = get_raw_data(file_path)
 
     validators = df["validator"].unique()
 
