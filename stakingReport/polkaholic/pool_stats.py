@@ -1,5 +1,5 @@
-from staking_stakingReport.sources.polkaholic import PolkaholicExtractor
-from staking_stakingReport.subscan import pools
+from stakingReport.sources.polkaholic import PolkaholicExtractor
+from stakingReport.subscan import pools
 from string import Template
 
 

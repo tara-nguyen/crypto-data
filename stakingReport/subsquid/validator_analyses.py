@@ -1,9 +1,9 @@
 import pandas as pd
 from reports.staking_etl import StakingReport, get_era
-from staking_stakingReport.subsquid import validator_stake as vs
-from staking_stakingReport.subsquid import multi_v_single as ms
-from staking_stakingReport.subsquid import nominations as nom
-from staking_stakingReport.polkadotjs import validator_commission as vc
+from stakingReport.subsquid import validator_stake as vs
+from stakingReport.subsquid import multi_v_single as ms
+from stakingReport.subsquid import nominations as nom
+from stakingReport.polkadotjs import validator_commission as vc
 from concurrent.futures import ThreadPoolExecutor
 from functools import reduce
 from time import perf_counter_ns
