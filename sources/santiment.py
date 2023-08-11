@@ -4,6 +4,8 @@ from string import Template
 
 
 class SantimentExtractor:
+    """Extract data from Santiment graphql."""
+
     def __init__(self):
         self.method = "POST"
         self.url = "https://api.santiment.net/graphql"
@@ -17,6 +19,14 @@ class SantimentExtractor:
     def extract(self, metric, slug="polkadot-new",
                 start=QuarterlyReport().start_time,
                 end=QuarterlyReport().end_time, moving_ave_base=1):
+        """
+        Keyword arguments:
+            slug: chain id as used by Santiment
+            start: start point of the time range of interest
+            end: end point of the time range of interest
+            moving_ave_base: number of units across which the moving average is
+                computed
+        """
         start, end = [t.strftime("%Y-%m-%dT%H:%M:%SZ") for t in [start, end]]
         payload = self.template.substitute(
             metric=metric, slug=slug, start=start, end=end,
@@ -28,11 +38,12 @@ class SantimentExtractor:
 
 
 class SantimentTransformer:
+    """Convert json-encoded content to a dataframe."""
+
     def __init__(self, data):
         self.data = data
 
     def to_frame(self):
-        """Convert json-encoded content to a dataframe."""
         df = pd.DataFrame(self.data)
         df["date"] = df["datetime"].str.slice(stop=10)
         df = df.reindex(columns=["date", "value"])

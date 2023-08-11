@@ -5,6 +5,10 @@ from reports.quarterly_etl import QuarterlyReport, extract
 
 
 class PolkaholicExtractor:
+    """Extract data from Polkaholic, either via Big Query or directly from
+    Polkaholic API.
+    """
+
     def __init__(self, from_bigquery=True, credentials="service-account.json",
                  route=""):
         self.from_bigquery = from_bigquery
@@ -19,7 +23,11 @@ class PolkaholicExtractor:
     def extract_bigquery(self, query_template,
                          start=QuarterlyReport().start_time,
                          end=QuarterlyReport().end_time, **kwargs):
-        """Extract data from Polkaholic."""
+        """
+        Keyword arguments:
+            start: start point of the time range of interest
+            end: end point of the time range of interest
+        """
         start, end = [t.strftime("%Y-%m-%d") for t in [start, end]]
         query = query_template.substitute(start=start, end=end, **kwargs)
         data = self.client.query(query)
@@ -41,6 +49,8 @@ class PolkaholicExtractor:
 
 
 class PolkaholicTransformer:
+    """Convert json-encoded content to a dataframe."""
+
     def __init__(self, data):
         self.data = data
 

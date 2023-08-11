@@ -48,7 +48,7 @@ class OpensquareTransformer:
             network: name of network (e.g., "polkadot", "kusama")
             time_cols: list of columns holding timestamps
             units: list of time units to use in pd.to_datetime() when converting
-            time_cols
+                time_cols
             sort: whether to sort the dataframe
             sort_by: if sort=True, which columns to sort the dataframe by
         """

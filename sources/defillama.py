@@ -26,8 +26,8 @@ class DefillamaTransformer:
                  end=QuarterlyReport().end_time):
         """
         Keyword arguments:
-            start -- start point of the time range of interest
-            end -- end point of the time range of interest
+            start: start point of the time range of interest
+            end: end point of the time range of interest
         """
         df = pd.DataFrame(self.data)
         if self.daily:

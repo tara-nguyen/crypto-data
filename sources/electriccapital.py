@@ -27,8 +27,8 @@ class ElectricCapitalTransformer:
                  end=QuarterlyReport().end_time):
         """
         Keyword arguments:
-            start -- start point of the time range of interest
-            end -- end point of the time range of interest
+            start: start point of the time range of interest
+            end: end point of the time range of interest
         """
         start, end = [to_epoch(t) * 1e3 for t in [start, end]]
 

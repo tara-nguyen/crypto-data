@@ -3,6 +3,8 @@ from time import sleep
 
 
 class SubscanExtractor:
+    """Extract data from Subscan API."""
+
     def __init__(self, route, api_version=1, network="polkadot", chain=None):
         self.method = "POST"
 
@@ -25,7 +27,6 @@ class SubscanExtractor:
                 f'network must be either "{networks[0]}" or "{networks[1]}"')
 
     def extract(self, payload):
-        """Extract data from Subscan."""
         while True:
             try:
                 data = extract(self.method, self.url, json=payload)["data"]
@@ -39,6 +40,8 @@ class SubscanExtractor:
 
 
 class SubscanChains:
+    """Store parachains and their token denominations."""
+
     def __init__(self):
         self.polkadot = {
             "Asset Hub-Polkadot": ["assethub-polkadot", 1e10],
@@ -90,6 +93,7 @@ class SubscanChains:
         self.chains = self.polkadot | self.kusama
 
     def get_parachains(self, relaychain):
+        """Get the parachains of the given relaychain."""
         relaychain = relaychain.lower()
         if relaychain == "polkadot":
             return self.polkadot
