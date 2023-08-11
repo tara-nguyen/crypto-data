@@ -4,6 +4,7 @@ from reports.quarterly_etl import print_long_df
 
 
 def main():
+    """Retrieve staking data."""
     path_start = "polkaholic/data_raw/"
 
     df_fast_unstake = fun.get_data(path_start + "fast_unstake_raw.csv")

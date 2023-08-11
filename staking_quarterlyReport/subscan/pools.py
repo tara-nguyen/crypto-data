@@ -3,7 +3,7 @@ from staking_quarterlyReport.sources.subscan import SubscanExtractor
 
 
 def get_data():
-    """Retrieve pool names and pool IDs from Subscan and return a dataframe."""
+    """Retrieve data on nomination pools from Subscan and return a dataframe."""
     data = SubscanExtractor("/nomination_pool/pools").extract({})["list"]
     df = pd.json_normalize(data)
 

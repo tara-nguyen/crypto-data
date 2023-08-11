@@ -38,6 +38,9 @@ def get_raw_data(path):
 
 
 def get_data(path="data_raw/fast_unstake_raw.csv"):
+    """Retrieve fast-unstake data, either directly from Polkaholic's Big Query
+    dataset or from a local csv file, and return a dataframe.
+    """
     try:
         df = pd.read_csv(path)
     except FileNotFoundError:

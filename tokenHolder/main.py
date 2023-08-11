@@ -3,6 +3,7 @@ from reports.quarterly_etl import QuarterlyReport, print_long_df
 
 
 def main():
+    """Retrieve data on token holder distribution."""
     df = pd.read_csv("holder_distributions.csv")
     for network in QuarterlyReport().networks:
         df_network = df.query("network == @network").drop(columns="network")

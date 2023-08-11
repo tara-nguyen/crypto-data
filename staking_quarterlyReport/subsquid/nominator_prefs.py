@@ -4,6 +4,9 @@ from staking_quarterlyReport.subsquid import (nominations as nom,
 
 
 def get_data(path="validator_commission.csv"):
+    """Retrieve data on validator stake, validator commission, nominator stake,
+    and nominator count. Return a dataframe.
+    """
     # Validator stake and commission
     df_commission = pd.read_csv(path)
     df_commission["era"] = df_commission["era"].astype(str)
