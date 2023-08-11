@@ -39,18 +39,12 @@ class OpensquareTransformer:
     def __init__(self, data):
         self.data = data
 
-    def to_frame(self, fields=None, token_cols=None, network=None,
-                 time_cols=None, units=None, sort=True, sort_by=None, **kwargs):
+    def to_frame(self, fields=None, token_cols=None, network=None):
         """
         Keyword arguments:
             fields: list of fields to keep in the dataframe
             token_cols: list of columns holding token amounts
             network: name of network (e.g., "polkadot", "kusama")
-            time_cols: list of columns holding timestamps
-            units: list of time units to use in pd.to_datetime() when converting
-                time_cols
-            sort: whether to sort the dataframe
-            sort_by: if sort=True, which columns to sort the dataframe by
         """
         df = pd.json_normalize(self.data, sep="_")
         if fields is not None:
@@ -61,18 +55,6 @@ class OpensquareTransformer:
                 lambda x: get_token_amount(x, network.lower()),
                 na_action="ignore")
 
-        if time_cols is not None:
-            for col, unit in zip(time_cols, units):
-                df[col] = pd.to_datetime(
-                    df[col], unit=unit).dt.strftime("%Y-%m-%d %H:%M:%S")
-
-        if sort:
-            if sort_by is None:
-                if fields[0] == "account":
-                    df = df.sort_values(fields[0], key=lambda s: s.str.lower())
-                else:
-                    df = df.sort_values(fields[0], ascending=False)
-            else:
-                df = df.sort_values(sort_by, **kwargs)
+        df = df.sort_values(fields[0], ascending=False)
 
         return df
