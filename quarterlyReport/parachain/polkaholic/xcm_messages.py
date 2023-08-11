@@ -1,7 +1,6 @@
 import pandas as pd
 from quarterlyReport.parachain.polkaholic import chains
-from quarterlyReport.parachain.sources.polkaholic import PolkaholicExtractor
-from quarterlyReport.parachain.sources.polkaholic import PolkaholicTransformer
+from sources.polkaholic import PolkaholicExtractor, PolkaholicTransformer
 from string import Template
 
 

@@ -1,5 +1,4 @@
-from quarterlyReport.devActivity.sources.santiment import SantimentExtractor
-from quarterlyReport.devActivity.sources.santiment import SantimentTransformer
+from sources.santiment import SantimentExtractor, SantimentTransformer
 
 
 def get_data():

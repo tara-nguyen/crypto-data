@@ -2,7 +2,7 @@
 .idea
 service-account.json
 __pycache__
-authorization.py
+*authorization.py
 credentials-sheets.json
 *.pickle
 *.csv

@@ -1,6 +1,6 @@
 import pandas as pd
 from reports.quarterly_etl import QuarterlyReport, extract
-from .authorization import token_terminal_bearer
+from sources.tokenterminal_authorization import bearer
 
 
 class TokenTerminalExtractor:
@@ -8,9 +8,9 @@ class TokenTerminalExtractor:
         self.method = "GET"
         self.url = f"https://api.tokenterminal.com/v2/internal/metrics/{metric}"
         self.headers = {"Content-Type": "application/json",
-                        "Authorization": token_terminal_bearer}
+                        "Authorization": bearer}
 
-    def extract(self, project="polkadot", interval="180d"):
+    def extract(self, project="polkadot", interval="max"):
         params = {"project_ids": project, "interval": interval}
         data = extract(self.method, self.url, headers=self.headers,
                        params=params)["data"]

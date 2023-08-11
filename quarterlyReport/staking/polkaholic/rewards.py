@@ -1,6 +1,5 @@
 import pandas as pd
-from quarterlyReport.staking.sources.polkaholic import PolkaholicExtractor
-from quarterlyReport.staking.sources.polkaholic import PolkaholicTransformer
+from sources.polkaholic import PolkaholicExtractor, PolkaholicTransformer
 from quarterlyReport.staking.polkaholic import rewarded_validators as rv
 from quarterlyReport.staking.subscan import pools
 from string import Template

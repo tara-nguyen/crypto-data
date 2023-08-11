@@ -1,6 +1,5 @@
 import pandas as pd
-from quarterlyReport.governance.sources.opensquare import OpensquareExtractor
-from quarterlyReport.governance.sources.opensquare import OpensquareTransformer
+from sources.opensquare import OpensquareExtractor, OpensquareTransformer
 from quarterlyReport.governance.subsquare import tracks
 from quarterlyReport.governance.dotreasury import proposals, bounties
 

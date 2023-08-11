@@ -1,7 +1,6 @@
 import pandas as pd
 from reports.quarterly_etl import QuarterlyReport
-from quarterlyReport.nft.sources.nftrade import NftradeExtractor
-from quarterlyReport.nft.sources.nftrade import NftradeTransformer
+from sources.nftrade import NftradeExtractor, NftradeTransformer
 from quarterlyReport.nft.coingecko import prices
 
 

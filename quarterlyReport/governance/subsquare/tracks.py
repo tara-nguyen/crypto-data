@@ -1,5 +1,4 @@
-from quarterlyReport.governance.sources.opensquare import OpensquareExtractor
-from quarterlyReport.governance.sources.opensquare import OpensquareTransformer
+from sources.opensquare import OpensquareExtractor, OpensquareTransformer
 
 
 def get_data(network):

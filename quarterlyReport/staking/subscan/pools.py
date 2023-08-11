@@ -1,5 +1,5 @@
 import pandas as pd
-from quarterlyReport.staking.sources.subscan import SubscanExtractor
+from sources.subscan import SubscanExtractor
 
 
 def get_data():

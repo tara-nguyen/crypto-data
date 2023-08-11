@@ -1,5 +1,5 @@
-from quarterlyReport.devActivity.sources.tokenterminal import (
-    TokenTerminalExtractor, TokenTerminalTransformer)
+from sources.tokenterminal import (TokenTerminalExtractor,
+                                   TokenTerminalTransformer)
 
 
 def get_data():

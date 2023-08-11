@@ -1,5 +1,4 @@
-from quarterlyReport.staking.sources.subsquid import SubsquidExtractor
-from quarterlyReport.staking.sources.subsquid import SubsquidTransformer
+from sources.subsquid import SubsquidExtractor, SubsquidTransformer
 from string import Template
 
 

@@ -1,9 +1,8 @@
 import re
 import pandas as pd
 from reports.quarterly_etl import QuarterlyReport
-from quarterlyReport.parachain.sources.subscan import SubscanChains
-from quarterlyReport.parachain.sources.subscan import SubscanExtractor
-from quarterlyReport.nft.sources.coingecko import CoingeckoCoins
+from sources.subscan import SubscanChains, SubscanExtractor
+from sources.coingecko import CoingeckoCoins
 from quarterlyReport.nft.coingecko import prices
 from os import getcwd
 

@@ -1,6 +1,6 @@
 import pandas as pd
 from reports.quarterly_etl import QuarterlyReport, to_epoch
-from quarterlyReport.defi.sources.statescan import StatescanExtractor
+from sources.statescan import StatescanExtractor
 
 
 def get_metadata(chain):

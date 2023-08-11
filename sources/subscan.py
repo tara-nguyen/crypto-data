@@ -32,13 +32,16 @@ class SubscanExtractor:
             except KeyError:
                 sleep(0.1)
             else:
-                return data
+                data = data["list"]
+                break
+
+        return data
 
 
 class SubscanChains:
     def __init__(self):
         self.polkadot = {
-            "AssetHub-Polkadot": ["assethub-polkadot", 1e10],
+            "Asset Hub-Polkadot": ["assethub-polkadot", 1e10],
             "Acala": ["acala", 1e12],
             "Astar": ["astar", 1e18],
             "Bifrost": ["bifrost", 1e13],
@@ -60,7 +63,7 @@ class SubscanChains:
             "Unique": ["unique", 1e18],
             "Zeitgeist": ["zeitgeist", 1e10]}
         self.kusama = {
-            "AssetHub-Kusama": ["assethub-kusama", 1e12],
+            "Asset Hub-Kusama": ["assethub-kusama", 1e12],
             "Altair": ["altair", 1e18],
             "Bajun": ["bajun", 1e12],
             "Basilisk": ["basilisk", 1e12],
