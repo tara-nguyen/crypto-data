@@ -1,3 +1,4 @@
+from quarterlyReport.staking.sources.subsquid import *
 from string import Template
 
 
