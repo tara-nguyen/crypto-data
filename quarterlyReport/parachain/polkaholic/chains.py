@@ -1,4 +1,6 @@
 from reports.quarterly_etl import QuarterlyReport
+from quarterlyReport.parachain.sources.polkaholic import PolkaholicExtractor
+from quarterlyReport.parachain.sources.polkaholic import PolkaholicTransformer
 
 
 def get_data():

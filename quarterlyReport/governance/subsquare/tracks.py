@@ -1,3 +1,7 @@
+from quarterlyReport.governance.sources.opensquare import OpensquareExtractor
+from quarterlyReport.governance.sources.opensquare import OpensquareTransformer
+
+
 def get_data(network):
     data = OpensquareExtractor("subsquare", network, "/gov2/tracks").extract()
     df = OpensquareTransformer(data).to_frame(["id", "name"])

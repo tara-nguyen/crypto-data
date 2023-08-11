@@ -1,6 +1,7 @@
 import pandas as pd
 from reports.quarterly_etl import QuarterlyReport
-from quarterlyReport.parachain.sources.subscan import SubscanChains, SubscanExtractor
+from quarterlyReport.parachain.sources.subscan import SubscanChains
+from quarterlyReport.parachain.sources.subscan import SubscanExtractor
 
 
 def get_data(ts=QuarterlyReport().end_time):

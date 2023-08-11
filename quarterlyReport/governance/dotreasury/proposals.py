@@ -1,3 +1,7 @@
+from quarterlyReport.governance.sources.opensquare import OpensquareExtractor
+from quarterlyReport.governance.sources.opensquare import OpensquareTransformer
+
+
 def get_data(network):
     fields = ["proposalIndex", "value", "fiatValue"]
     data = OpensquareExtractor("dotreasury", network, "/proposals").extract()

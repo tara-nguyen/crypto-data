@@ -1,4 +1,5 @@
-from quarterlyReport.defi.sources.defillama import *
+from quarterlyReport.defi.sources.defillama import (
+    DefillamaExtractor, DefillamaTransformer, DefillamaParachains)
 
 
 def get_data():

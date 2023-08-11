@@ -1,3 +1,7 @@
+from quarterlyReport.devActivity.sources.tokenterminal import (
+    TokenTerminalExtractor, TokenTerminalTransformer)
+
+
 def get_data():
     data = TokenTerminalExtractor("active_developers").extract()
     df = TokenTerminalTransformer(data).to_frame()
