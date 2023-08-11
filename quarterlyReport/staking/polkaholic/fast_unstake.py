@@ -4,7 +4,7 @@ from quarterlyReport.staking.sources.polkaholic import PolkaholicTransformer
 from string import Template
 
 
-def get_raw_data(path):
+def get_raw_data(file_path):
     """Retrieve fast-unstake data from Polkaholic's Big Query dataset, save the
     dataset to a csv file, and return a dataframe.
     """
@@ -33,19 +33,20 @@ def get_raw_data(path):
     """)
     data = PolkaholicExtractor().extract(query)
     df = PolkaholicTransformer(data).to_frame()
-    df.to_csv(path, index=False)
+    df.to_csv(file_path, index=False)
 
     return df
 
 
-def get_data(path="data_raw/fast_unstake_raw.csv"):
+def get_data(file_path_prefix="data_raw/"):
     """Retrieve fast-unstake data, either directly from Polkaholic's Big Query
     dataset or from a local csv file, and return a dataframe.
     """
+    file_path = file_path_prefix + "fast_unstake_raw.csv"
     try:
-        df = pd.read_csv(path)
+        df = pd.read_csv(file_path)
     except FileNotFoundError:
-        df = get_raw_data(path)
+        df = get_raw_data(file_path)
 
     df = df.eval("amountPerUser = amount / uniqueUsers")
 
