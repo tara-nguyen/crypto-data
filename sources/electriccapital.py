@@ -4,6 +4,8 @@ from functools import reduce
 
 
 class ElectricCapitalExtractor:
+    """Extract data from Electric Capital."""
+
     def __init__(self, metric="dev_mau_by_dev_type", ecosystem="polkadot"):
         self.method = "GET"
         self.url = "https://www.developerreport.com/api/charts/"
@@ -16,12 +18,18 @@ class ElectricCapitalExtractor:
 
 
 class ElectricCapitalTransformer:
+    """Convert json-encoded content to a dataframe."""
+
     def __init__(self, data):
         self.data = data
 
-    def to_frame(self, start=QuarterlyReport().start_time,
-                 end=QuarterlyReport().end_time, new_cols=None):
-        """Convert json-encoded content to a dataframe."""
+    def to_frame(self, new_cols, start=QuarterlyReport().start_time,
+                 end=QuarterlyReport().end_time):
+        """
+        Keyword arguments:
+            start -- start point of the time range of interest
+            end -- end point of the time range of interest
+        """
         start, end = [to_epoch(t) * 1e3 for t in [start, end]]
 
         dfs = []
@@ -34,8 +42,7 @@ class ElectricCapitalTransformer:
         df["date"] = pd.to_datetime(df["timestamp"],
                                     unit="ms").dt.strftime("%Y-%m-%d")
         df = df.reindex(columns=["date"] + df.columns[1:-1].tolist())
-        if new_cols is not None:
-            df = df.set_axis(["date"] + new_cols, axis=1)
+        df = df.set_axis(["date"] + new_cols, axis=1)
         df = df.sort_values("date", ascending=False)
 
         return df
