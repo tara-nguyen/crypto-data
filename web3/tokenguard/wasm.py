@@ -3,6 +3,8 @@ from reports.quarterly_etl import QuarterlyReport
 
 
 def get_data(network, file_path_prefix="", end=QuarterlyReport().end_time):
+    """Retrieve data on WASM smart contracts and active users from csv files and
+    return a dataframe."""
     contracts_file_path = file_path_prefix + network + "_created_scs.csv"
     users_file_path = file_path_prefix + network + "_active_users.csv"
 
@@ -14,6 +16,7 @@ def get_data(network, file_path_prefix="", end=QuarterlyReport().end_time):
     df = df.reindex(columns=["Daily", "Count", "activeUsersCumulative"])
     df = df.rename(columns={"Daily": "date", "Count": "contracts"})
 
+    # Make all dates appear in the dataframe and fill in missing values
     index = pd.date_range(df["date"].min(), end.strftime("%Y-%m-%d"), freq="1D",
                           name="date").strftime("%Y-%m-%d")[:-1]
     df = df.set_index("date").reindex(index=index)
