@@ -1,7 +1,6 @@
 import pandas as pd
 from reports.staking_etl import StakingReport, get_time, get_era
-from stakingReport.sources.polkadotjs import (PolkadotjsExtractor,
-                                              PolkadotjsTransformer)
+from stakingReport.sources.polkadotjs import *
 
 
 def get_data(start=StakingReport().start_era, end=StakingReport().end_era):
